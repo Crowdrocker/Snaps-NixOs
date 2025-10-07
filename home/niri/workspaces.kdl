@@ -1,0 +1,20 @@
+// Workspace assignments
+workspace "1" {
+  default "kitty"
+}
+
+workspace "2" {
+  default "firefox"
+}
+
+workspace "3" {
+  default "discord"
+}
+
+workspace "4" {
+  // Gaming workspace
+}
+
+workspace "5" {
+  // Photo editing workspace
+}

@@ -1,0 +1,25 @@
+{
+  "version": "0.5.0",
+  "nodes": [
+    {
+      "id": "game_out",
+      "name": "Game Audio",
+      "type": "sink"
+    },
+    {
+      "id": "discord_out", 
+      "name": "Discord Audio",
+      "type": "sink"
+    },
+    {
+      "id": "music_out",
+      "name": "Music Audio", 
+      "type": "sink"
+    },
+    {
+      "id": "combined_out",
+      "name": "Combined Output",
+      "type": "sink"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+// ~/.config/niri/config.kdl
+import "keybinds.kdl"
+import "workspaces.kdl"
+import "window-rules.kdl"
+import "theme.kdl"
+
+output "HDMI-A-1" {
+  mode 1920x1080@60
+  position 0,0
+}
+
+exec-once = [
+  "bash ~/.local/bin/jarvis-startup.sh",
+  "qpwgraph -p ~/.config/qpwgraph/routes.patch",
+  "corectrl",
+  "swww init",
+  "swww img ~/.config/wallpapers/wehttamsnaps-wallpaper.jpg",
+]
+
+key-bindings {
+  import "keybinds.kdl"
+}
+
+window-rules {
+  import "window-rules.kdl"
+}
+
+workspace-rules {
+  import "workspaces.kdl"
+}
+
+theme {
+  import "theme.kdl"
+}
