@@ -1,0 +1,95 @@
+// WehttamSnaps Niri Configuration
+// Main configuration file that imports all modules
+
+// Import modular configurations
+import "keybinds.kdl"
+import "window-rules.kdl"
+import "layout.kdl"
+import "animations.kdl"
+import "startup.kdl"
+import "environment.kdl"
+
+// ============================================================================
+// INPUT CONFIGURATION
+// ============================================================================
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        
+        // Key repeat settings
+        repeat-delay 600
+        repeat-rate 25
+    }
+    
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+        accel-speed 0.2
+    }
+    
+    mouse {
+        accel-speed 0.0
+        accel-profile "flat"
+    }
+    
+    // Disable mouse acceleration for gaming
+    tablet {
+        map-to-output "HDMI-A-1"
+    }
+}
+
+// ============================================================================
+// OUTPUT CONFIGURATION (Monitor Setup)
+// ============================================================================
+
+output "HDMI-A-1" {
+    // Adjust these values to match your monitor
+    mode "1920x1080@60"
+    scale 1.0
+    transform "normal"
+    position x=0 y=0
+}
+
+// ============================================================================
+// CURSOR CONFIGURATION
+// ============================================================================
+
+cursor {
+    xcursor-theme "Bibata-Modern-Classic"
+    xcursor-size 24
+}
+
+// ============================================================================
+// PREFER NO CSD (Client-Side Decorations)
+// ============================================================================
+
+prefer-no-csd
+
+// ============================================================================
+// SCREENSHOT PATH
+// ============================================================================
+
+screenshot-path "~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png"
+
+// ============================================================================
+// HOTKEY OVERLAY
+// ============================================================================
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+// ============================================================================
+// DEBUG SETTINGS
+// ============================================================================
+
+debug {
+    // Uncomment for debugging
+    // render-drm-device "/dev/dri/renderD128"
+    // wait-for-frame-completion-before-queueing
+    // enable-color-transformations-capability
+}

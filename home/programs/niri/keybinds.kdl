@@ -1,0 +1,259 @@
+// WehttamSnaps Niri Keybindings
+// Comprehensive keybinding configuration
+
+// ============================================================================
+// MODIFIER KEYS
+// ============================================================================
+// Mod = Super (Windows key)
+// Mod+Shift = Super + Shift
+// Mod+Ctrl = Super + Control
+// Mod+Alt = Super + Alt
+
+binds {
+    // ========================================================================
+    // SYSTEM CONTROLS
+    // ========================================================================
+    
+    // Exit Niri
+    Mod+Shift+E { quit; }
+    
+    // Reload configuration
+    Mod+Shift+R { spawn "niri" "msg" "reload-config"; }
+    
+    // Power menu (custom Quickshell widget)
+    Mod+Shift+Q { spawn "~/.config/quickshell/widgets/power-menu.sh"; }
+    
+    // Lock screen
+    Mod+L { spawn "swaylock"; }
+    
+    // ========================================================================
+    // APPLICATIONS
+    // ========================================================================
+    
+    // Terminal
+    Mod+Return { spawn "kitty"; }
+    Mod+T { spawn "kitty"; }
+    
+    // Application launcher
+    Mod+D { spawn "rofi" "-show" "drun"; }
+    Mod+Space { spawn "fuzzel"; }
+    
+    // File manager
+    Mod+E { spawn "thunar"; }
+    
+    // Browser
+    Mod+B { spawn "firefox"; }
+    
+    // ========================================================================
+    // CUSTOM LAUNCHERS (Quickshell Widgets)
+    // ========================================================================
+    
+    // Work launcher
+    Mod+W { spawn "~/.config/quickshell/widgets/work-launcher.sh"; }
+    
+    // Gaming launcher
+    Mod+G { spawn "~/.config/quickshell/widgets/game-launcher.sh"; }
+    
+    // Welcome app
+    Mod+H { spawn "~/.config/quickshell/widgets/welcome-app.sh"; }
+    
+    // Settings app
+    Mod+Comma { spawn "~/.config/quickshell/widgets/settings-app.sh"; }
+    
+    // Quick editor
+    Mod+Shift+E { spawn "~/.config/quickshell/widgets/quick-editor.sh"; }
+    
+    // ========================================================================
+    // WINDOW MANAGEMENT
+    // ========================================================================
+    
+    // Close window
+    Mod+Q { close-window; }
+    Mod+Shift+C { close-window; }
+    
+    // Toggle fullscreen
+    Mod+F { fullscreen-window; }
+    
+    // Toggle floating
+    Mod+Shift+Space { toggle-window-floating; }
+    
+    // Center floating window
+    Mod+C { center-column; }
+    
+    // ========================================================================
+    // FOCUS MOVEMENT
+    // ========================================================================
+    
+    // Focus left/right (horizontal scrolling)
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+H { focus-column-left; }
+    Mod+L { focus-column-right; }
+    
+    // Focus up/down (within column)
+    Mod+Up { focus-window-up; }
+    Mod+Down { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+J { focus-window-down; }
+    
+    // Focus first/last window
+    Mod+Home { focus-column-first; }
+    Mod+End { focus-column-last; }
+    
+    // ========================================================================
+    // WINDOW MOVEMENT
+    // ========================================================================
+    
+    // Move window left/right
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+L { move-column-right; }
+    
+    // Move window up/down
+    Mod+Shift+Up { move-window-up; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+J { move-window-down; }
+    
+    // Move to workspace
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+    
+    // ========================================================================
+    // WORKSPACE SWITCHING
+    // ========================================================================
+    
+    // Switch to workspace
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    
+    // Previous/Next workspace
+    Mod+Page_Up { focus-workspace-previous; }
+    Mod+Page_Down { focus-workspace-next; }
+    Mod+Ctrl+Left { focus-workspace-previous; }
+    Mod+Ctrl+Right { focus-workspace-next; }
+    
+    // ========================================================================
+    // COLUMN RESIZING
+    // ========================================================================
+    
+    // Resize column width
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { reset-window-height; }
+    
+    // Consume/expel window into column
+    Mod+Minus { consume-window-into-column; }
+    Mod+Equal { expel-window-from-column; }
+    
+    // ========================================================================
+    // MONITOR MANAGEMENT
+    // ========================================================================
+    
+    // Focus monitor (for multi-monitor setups)
+    Mod+Shift+Left { focus-monitor-left; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+Up { focus-monitor-up; }
+    Mod+Shift+Down { focus-monitor-down; }
+    
+    // Move window to monitor
+    Mod+Ctrl+Shift+Left { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+Right { move-column-to-monitor-right; }
+    Mod+Ctrl+Shift+Up { move-column-to-monitor-up; }
+    Mod+Ctrl+Shift+Down { move-column-to-monitor-down; }
+    
+    // ========================================================================
+    // SCREENSHOTS
+    // ========================================================================
+    
+    // Screenshot full screen
+    Print { spawn "grim" "-o" "HDMI-A-1" "~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"; }
+    
+    // Screenshot selection
+    Mod+Print { spawn "grim" "-g" "$(slurp)" "~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"; }
+    
+    // Screenshot with editor
+    Mod+Shift+S { spawn "grim" "-g" "$(slurp)" "-" "|" "swappy" "-f" "-"; }
+    
+    // ========================================================================
+    // AUDIO CONTROLS
+    // ========================================================================
+    
+    // Volume control
+    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    
+    // Microphone mute
+    XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    
+    // Media controls
+    XF86AudioPlay { spawn "playerctl" "play-pause"; }
+    XF86AudioNext { spawn "playerctl" "next"; }
+    XF86AudioPrev { spawn "playerctl" "previous"; }
+    
+    // ========================================================================
+    // GAMING MODE
+    // ========================================================================
+    
+    // Toggle gaming mode (activates gamemode and J.A.R.V.I.S. sound)
+    Mod+Shift+G { spawn "~/.config/scripts/jarvis/gaming-mode.sh"; }
+    
+    // Toggle streaming mode
+    Mod+Shift+T { spawn "~/.config/scripts/jarvis/streaming-mode.sh"; }
+    
+    // ========================================================================
+    // UTILITIES
+    // ========================================================================
+    
+    // Audio mixer
+    Mod+A { spawn "pavucontrol"; }
+    
+    // Audio routing
+    Mod+Shift+A { spawn "qpwgraph"; }
+    
+    // System monitor
+    Mod+Escape { spawn "kitty" "-e" "btop"; }
+    
+    // GPU monitor
+    Mod+Shift+Escape { spawn "kitty" "-e" "nvtop"; }
+    
+    // Color picker
+    Mod+P { spawn "hyprpicker" "-a"; }
+    
+    // ========================================================================
+    // MOUSE BINDINGS
+    // ========================================================================
+    
+    // Move window with mouse
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollRight { focus-column-right; }
+    Mod+WheelScrollLeft { focus-column-left; }
+    
+    // Resize with mouse
+    Mod+Shift+WheelScrollDown cooldown-ms=150 { focus-column-right; }
+    Mod+Shift+WheelScrollUp cooldown-ms=150 { focus-column-left; }
+    
+    // ========================================================================
+    // TOUCHPAD GESTURES
+    // ========================================================================
+    
+    // Workspace switching with touchpad
+    Mod+TouchpadScrollDown { focus-workspace-down; }
+    Mod+TouchpadScrollUp { focus-workspace-up; }
+}

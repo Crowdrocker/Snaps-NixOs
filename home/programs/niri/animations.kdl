@@ -1,0 +1,86 @@
+// WehttamSnaps Niri Animations
+// Smooth and responsive animation settings
+
+animations {
+    // ========================================================================
+    // WINDOW ANIMATIONS
+    // ========================================================================
+    
+    // Window open animation
+    window-open {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    
+    // Window close animation
+    window-close {
+        duration-ms 150
+        curve "ease-in-cubic"
+    }
+    
+    // ========================================================================
+    // MOVEMENT ANIMATIONS
+    // ========================================================================
+    
+    // Horizontal view movement (scrolling between columns)
+    horizontal-view-movement {
+        duration-ms 250
+        curve "ease-out-expo"
+    }
+    
+    // Window movement
+    window-movement {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    
+    // ========================================================================
+    // WORKSPACE ANIMATIONS
+    // ========================================================================
+    
+    // Workspace switch animation
+    workspace-switch {
+        duration-ms 300
+        curve "ease-out-expo"
+    }
+    
+    // ========================================================================
+    // RESIZE ANIMATIONS
+    // ========================================================================
+    
+    // Window resize
+    window-resize {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+    
+    // ========================================================================
+    // CONFIG NOTIFICATION
+    // ========================================================================
+    
+    // Config reload notification
+    config-notification-open-close {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    
+    // ========================================================================
+    // ANIMATION CURVES AVAILABLE
+    // ========================================================================
+    // - linear
+    // - ease-out-cubic
+    // - ease-out-expo
+    // - ease-in-cubic
+    // - ease-in-out-cubic
+    // - ease-in-expo
+    // - ease-in-out-expo
+    
+    // ========================================================================
+    // PERFORMANCE NOTES
+    // ========================================================================
+    // These settings are optimized for:
+    // - Intel i5-4430 (4 cores)
+    // - AMD RX 580
+    // - Smooth but not too slow
+    // - Responsive feel for gaming and work
+}

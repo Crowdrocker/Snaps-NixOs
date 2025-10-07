@@ -1,133 +1,282 @@
 # WehttamSnaps NixOS Configuration
 
-A complete NixOS setup for streaming and gaming using the Niri window manager.
+<div align="center">
 
-## 🚀 Features
+![WehttamSnaps Logo](assets/logos/wehttamsnaps-logo.png)
 
-- **Niri Window Manager** with modular KDL configuration
-- **Quickshell** with custom work/gaming launchers
-- **J.A.R.V.I.S. AI Voice Integration**
-- **AMD Gaming Optimizations** with CachyOS kernel
-- **PipeWire Audio Routing** (Voicemeter alternative)
-- **Custom Violet-Cyan Color Scheme**
-- **Gaming & Streaming Workflows**
+**A complete NixOS setup for gaming, streaming, and photography**
 
-## 🛠️ Installation
+[![NixOS](https://img.shields.io/badge/NixOS-Unstable-blue.svg?style=flat&logo=nixos&logoColor=white)](https://nixos.org)
+[![Niri](https://img.shields.io/badge/WM-Niri-purple.svg?style=flat)](https://github.com/YaLTeR/niri)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat)](LICENSE)
 
-1. Clone this repository:
+[Features](#features) • [Installation](#installation) • [Documentation](#documentation) • [Screenshots](#screenshots) • [Support](#support)
+
+</div>
+
+---
+
+## 🎯 Overview
+
+This is my personal NixOS configuration featuring:
+- **Niri** - Scrollable tiling Wayland compositor
+- **Noctalia Shell** - Beautiful Quickshell-based desktop environment
+- **J.A.R.V.I.S. Integration** - Custom sound effects and automation
+- **Gaming Optimizations** - AMD RX 580 tuned for maximum performance
+- **Audio Routing** - Voicemeter-like setup using PipeWire
+- **Streaming Ready** - OBS Studio with advanced audio configuration
+
+---
+
+## ✨ Features
+
+### 🎮 Gaming
+- **CachyOS Kernel** for maximum gaming performance
+- **GameMode** automatic optimizations
+- **AMD GPU** fully optimized (RADV, Mesa-git)
+- **Steam** with Proton-GE support
+- **Lutris, Heroic** for non-Steam games
+- **MangoHud** performance overlay
+- **Custom launch options** for all games
+
+### 🎨 Desktop Environment
+- **Niri Compositor** - Unique scrolling tiling layout
+- **Noctalia Shell** - Minimal, beautiful Quickshell interface
+- **Modular Configuration** - Easy to customize and maintain
+- **WehttamSnaps Branding** - Violet-to-cyan gradient theme
+- **Custom Widgets** - Work launcher, gaming launcher, power menu
+
+### 🎵 Audio
+- **PipeWire** - Modern audio server
+- **Virtual Sinks** - Separate audio channels (game, browser, Discord, Spotify)
+- **qpwgraph** - Visual audio routing
+- **OBS Integration** - Perfect audio mixing for streaming
+
+### 🤖 J.A.R.V.I.S. Theme
+- **Startup Sounds** - Time-based greetings
+- **Gaming Mode** - Performance activation with sound
+- **Streaming Mode** - OBS launch with sound
+- **Notifications** - Custom notification sounds
+- **Warnings** - System alert sounds
+
+### 📸 Photography & Design
+- **GIMP, Krita, Inkscape** - Professional creative tools
+- **Darktable** - RAW photo processing
+- **Color-managed workflow** - Accurate color reproduction
+
+### 📡 Streaming
+- **OBS Studio** - Professional streaming software
+- **Advanced audio routing** - Independent source control
+- **Twitch integration** - Ready to stream
+- **Custom scenes** - Pre-configured layouts
+
+---
+
+## 🖥️ System Specifications
+
+**My Hardware:**
+- **CPU**: Intel i5-4430 (4 cores, 4 threads)
+- **GPU**: AMD RX 580 (8GB VRAM)
+- **RAM**: 16GB DDR3
+- **Storage**:
+  - 120GB SSD (NixOS)
+  - 1TB SSD (Games/Files)
+  - 120GB SSD (Windows dual-boot)
+
+**Optimized for:**
+- 1080p gaming
+- Single monitor setup
+- Streaming at 1080p/60fps
+- Photography editing
+- General productivity
+
+---
+
+## 📦 Installation
+
+### Quick Start
+
 ```bash
-git clone https://github.com/Crowdrocker/Snaps-NixOS.git
-cd Snaps-NixOS
-Run the installation script:
+# Clone the repository
+git clone https://github.com/Crowdrocker/Snaps-NixOs.git ~/nixos-config
+cd ~/nixos-config
 
-chmod +x install.sh
-./install.sh
-Apply NixOS configuration:
+# Update hardware configuration
+sudo nixos-generate-config --show-hardware-config > hosts/snaps-pc/hardware-configuration.nix
 
-sudo nixos-rebuild switch
-📁 Structure
-nixos/ - System configuration files
-home/ - User configuration (Niri, scripts, Quickshell)
-wallpapers/ - Brand wallpapers
-sounds/ - J.A.R.V.I.S. sound pack
-themes/ - SDDM and GTK themes
-🎮 Gaming Setup
-Includes optimizations for:
+# Build and switch
+sudo nixos-rebuild switch --flake .#snaps-pc
+```
 
-Cyberpunk 2077
-The Division 2
-Fallout series
-And many more...
-🔊 Audio Routing
-Uses PipeWire + qpwgraph for advanced audio routing:
+### Detailed Installation
 
-Game Audio → Virtual Sink
-Discord Audio → Virtual Sink
-Music → Virtual Sink
-All combined for streaming
-🤖 J.A.R.V.I.S. Integration
-Startup/shutdown greetings
-Gaming/streaming mode announcements
-System status reports
-Custom sound triggers
-🔧 Customization
-Edit the configuration files in home/niri/ and home/quickshell/widgets/ to match your preferences.
+See [INSTALLATION.md](docs/INSTALLATION.md) for complete step-by-step guide.
 
-📞 Support
-Join our Discord: https://discord.gg/nTaknDvdUA
+---
 
+## 📚 Documentation
 
+- **[Installation Guide](docs/INSTALLATION.md)** - Complete setup instructions
+- **[Keybindings](docs/KEYBINDINGS.md)** - All keyboard shortcuts
+- **[Audio Routing](docs/AUDIO_ROUTING.md)** - PipeWire configuration guide
+- **[Gaming Guide](docs/GAMING.md)** - Gaming optimizations and tips
+- **[Streaming Guide](docs/STREAMING.md)** - OBS setup and configuration
+- **[Customization](docs/CUSTOMIZATION.md)** - Personalize your setup
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
-### **Install Script for Snaps-NixOS**
-```bash
-#!/bin/bash
-# Snaps-NixOS Installation Script
+---
 
-set -e
+## 🎨 Screenshots
 
-echo "🚀 Setting up WehttamSnaps NixOS Configuration..."
+### Desktop
+![Desktop Screenshot](screenshots/desktop.png)
+*Niri with Noctalia shell and WehttamSnaps theme*
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
+### Gaming
+![Gaming Screenshot](screenshots/gaming.png)
+*Gaming workspace with MangoHud overlay*
 
-# Check if running as root
-if [ "$EUID" -eq 0 ]; then
-    echo -e "${RED}Please do not run as root${NC}"
-    exit 1
-fi
+### Streaming
+![Streaming Screenshot](screenshots/streaming.png)
+*OBS Studio with audio routing*
 
-# Create directory structure
-echo -e "${YELLOW}Creating directory structure...${NC}"
-mkdir -p ~/.config/niri
-mkdir -p ~/.config/quickshell/widgets
-mkdir -p ~/.local/bin
-mkdir -p ~/.local/share/sounds/jarvis
-mkdir -p ~/.local/share/icons
-mkdir -p ~/.config/qpwgraph
-mkdir -p ~/Pictures/wallpapers
+### Photography
+![Photography Screenshot](screenshots/photography.png)
+*GIMP workspace for photo editing*
 
-# Copy Niri configuration
-echo -e "${YELLOW}Copying Niri configuration...${NC}"
-cp -r home/niri/* ~/.config/niri/
+---
 
-# Copy Quickshell widgets
-echo -e "${YELLOW}Copying Quickshell widgets...${NC}"
-cp -r home/quickshell/widgets/* ~/.config/quickshell/widgets/
+## 🗂️ Repository Structure
 
-# Copy scripts and make executable
-echo -e "${YELLOW}Installing scripts...${NC}"
-cp home/scripts/* ~/.local/bin/
-chmod +x ~/.local/bin/*.sh
+```
+Snaps-NixOs/
+├── flake.nix                    # Main flake configuration
+├── hosts/                       # Per-machine configurations
+│   └── snaps-pc/               # Main PC configuration
+├── modules/                     # Reusable NixOS modules
+│   ├── gaming/                 # Gaming optimizations
+│   ├── audio/                  # Audio configuration
+│   ├── desktop/                # Desktop environment
+│   ├── streaming/              # Streaming setup
+│   └── work/                   # Work applications
+├── home/                        # Home-manager configurations
+│   └── programs/               # Program-specific configs
+│       ├── niri/               # Niri configuration
+│       └── quickshell/         # Quickshell widgets
+├── scripts/                     # Utility scripts
+│   └── jarvis/                 # J.A.R.V.I.S. scripts
+├── assets/                      # Static assets
+│   ├── wallpapers/             # Wallpaper collection
+│   ├── sounds/                 # J.A.R.V.I.S. sounds
+│   └── themes/                 # Theme files
+└── docs/                        # Documentation
+```
 
-# Copy wallpapers
-echo -e "${YELLOW}Copying wallpapers...${NC}"
-cp wallpapers/* ~/Pictures/wallpapers/ 2>/dev/null || true
+---
 
-# Copy sounds (if they exist)
-echo -e "${YELLOW}Setting up J.A.R.V.I.S. sounds...${NC}"
-cp sounds/jarvis/* ~/.local/share/sounds/jarvis/ 2>/dev/null || true
+## 🎮 Gaming Library
 
-# Set up NixOS configuration
-echo -e "${YELLOW}Setting up NixOS configuration...${NC}"
-sudo cp nixos/configuration.nix /etc/nixos/
-sudo cp nixos/hardware-configuration.nix /etc/nixos/ 2>/dev/null || echo "hardware-configuration.nix not found, generate manually"
+Optimized launch options for:
+- Cyberpunk 2077
+- The Division 1 & 2
+- Fallout 4
+- Watch Dogs series
+- The First Descendant
+- And more...
 
-# Install required packages for scripts
-echo -e "${YELLOW}Installing required packages...${NC}"
-sudo nix-env -iA nixos.mpv nixos.pulseaudio
+See [Steam Launch Options](modules/gaming/steam.nix) for details.
 
-# Set up audio routing
-echo -e "${YELLOW}Setting up audio routing...${NC}"
-bash ~/.local/bin/audio-setup.sh
+---
 
-echo -e "${GREEN}✅ Setup complete!${NC}"
-echo -e "${YELLOW}Next steps:${NC}"
-echo "1. Review /etc/nixos/configuration.nix"
-echo "2. Run: sudo nixos-rebuild switch"
-echo "3. Add your J.A.R.V.I.S. sound files to ~/.local/share/sounds/jarvis/"
-echo "4. Configure qpwgraph for audio routing"
-echo "5. Customize wallpapers and themes"
+## 🔧 Key Technologies
 
+- **NixOS Unstable** - Reproducible Linux distribution
+- **Niri** - Scrollable tiling Wayland compositor
+- **Quickshell** - QML-based shell framework
+- **PipeWire** - Modern audio/video server
+- **CachyOS Kernel** - Performance-optimized kernel
+- **Home Manager** - User environment management
+- **Chaotic-Nyx** - Bleeding-edge packages
+
+---
+
+## 🎯 Workspaces
+
+| Workspace | Purpose | Applications |
+|-----------|---------|--------------|
+| 1 | General | Terminal, file manager |
+| 2 | Browser | Firefox |
+| 3 | Communication | Discord, Twitch |
+| 4 | Photography | GIMP, Krita, Inkscape |
+| 5 | Gaming | Steam, Lutris, Heroic |
+| 6 | Streaming | OBS Studio |
+| 9 | Music | Spotify |
+
+---
+
+## ⌨️ Essential Keybindings
+
+| Keybinding | Action |
+|------------|--------|
+| `Super+Return` | Terminal |
+| `Super+D` | App launcher |
+| `Super+W` | Work launcher |
+| `Super+G` | Gaming launcher |
+| `Super+Shift+G` | Gaming mode |
+| `Super+Shift+T` | Streaming mode |
+| `Super+A` | Audio mixer |
+| `Super+Shift+A` | Audio routing |
+
+See [KEYBINDINGS.md](docs/KEYBINDINGS.md) for complete list.
+
+---
+
+## 🤝 Contributing
+
+This is my personal configuration, but feel free to:
+- Fork and adapt for your own use
+- Submit issues for bugs
+- Suggest improvements
+- Share your own configurations
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **[NixOS](https://nixos.org/)** - Amazing Linux distribution
+- **[Niri](https://github.com/YaLTeR/niri)** - Innovative Wayland compositor
+- **[Noctalia](https://github.com/noctalia-dev/noctalia-shell)** - Beautiful shell
+- **[JaKooLit](https://github.com/JaKooLit)** - Hyprland inspiration
+- **[Chaotic-Nyx](https://github.com/chaotic-cx/nyx)** - Bleeding-edge packages
+- **NixOS Community** - Helpful and supportive
+
+---
+
+## 📞 Support
+
+- **Discord**: [WehttamSnaps Community](https://discord.gg/nTaknDvdUA)
+- **GitHub Issues**: [Report bugs](https://github.com/Crowdrocker/Snaps-NixOs/issues)
+- **Twitch**: [WehttamSnaps](https://twitch.tv/WehttamSnaps)
+- **YouTube**: [WehttamSnaps](https://youtube.com/@WehttamSnaps)
+
+---
+
+## 🌟 Star History
+
+If you find this configuration helpful, please consider giving it a star! ⭐
+
+---
+
+<div align="center">
+
+**Made with ❤️ by WehttamSnaps**
+
+*"It just works!"*
+
+</div>
