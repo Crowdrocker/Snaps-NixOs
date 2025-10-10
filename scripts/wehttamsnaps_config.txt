@@ -1,0 +1,262 @@
+{ config, pkgs, inputs, ... }:
+
+{
+  imports = [
+    ./hardware-configuration.nix
+  ];
+
+  # === SYSTEM IDENTITY ===
+  networking.hostName = "snaps-pc";
+  time.timeZone = "America/Chicago"; # Central Time (Lincoln, NE area)
+
+  # === NIX SETTINGS ===
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      auto-optimise-store = true;
+      trusted-users = [ "root" "wehttamsnaps" ];
+      
+      # Substituters for faster builds
+      substituters = [
+        "https://hyprland.cachix.org"
+        "https://nix-gaming.cachix.org"
+      ];
+      trusted-public-keys = [
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+      ];
+    };
+    
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+  };
+
+  # Allow unfree packages (needed for Steam, Discord, etc.)
+  nixpkgs.config.allowUnfree = true;
+
+  # === BOOTLOADER - GRUB with J.A.R.V.I.S. Theme ===
+  boot = {
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot";
+      };
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        useOSProber = true; # Detect Windows
+        theme = pkgs.stdenv.mkDerivation {
+          name = "grub-jarvis-theme";
+          src = ./grub-theme; # We'll create this
+          installPhase = "cp -r . $out";
+        };
+        splashImage = ./grub-theme/background.png;
+      };
+      timeout = 5;
+    };
+    
+    # Kernel parameters for AMD GPU
+    kernelParams = [
+      "amd_pstate=active"
+      "amdgpu.ppfeaturemask=0xffffffff"
+    ];
+    
+    # Use CachyOS kernel for gaming performance
+    kernelPackages = pkgs.linuxPackages_cachyos;
+  };
+
+  # === HARDWARE SUPPORT ===
+  hardware = {
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true; # For 32-bit games
+      
+      extraPackages = with pkgs; [
+        amdvlk
+        rocm-opencl-icd
+        rocm-opencl-runtime
+      ];
+      
+      extraPackages32 = with pkgs; [
+        driversi686Linux.amdvlk
+      ];
+    };
+    
+    # Enable AMD CPU microcode updates
+    cpu.amd.updateMicrocode = true;
+  };
+
+  # === USERS ===
+  users.users.wehttamsnaps = {
+    isNormalUser = true;
+    description = "Matt - WehttamSnaps";
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "input" "gamemode" ];
+    shell = pkgs.zsh;
+  };
+
+  # === CORE SYSTEM PACKAGES ===
+  environment.systemPackages = with pkgs; [
+    # Core utilities
+    vim neovim wget curl git
+    htop btop fastfetch
+    
+    # File management
+    file tree eza bat fd ripgrep fzf
+    unzip p7zip unrar
+    
+    # Network tools
+    networkmanager
+    
+    # Development
+    gcc python3 nodejs rustc cargo
+    
+    # System monitoring
+    lm_sensors
+    
+    # Fan control (for your cooling setup)
+    lact # Linux AMDGPU Controller
+  ];
+
+  # === SERVICES ===
+  services = {
+    # Display manager - SDDM with SugarCandy theme
+    xserver = {
+      enable = true;
+      videoDrivers = [ "amdgpu" ];
+    };
+    
+    displayManager.sddm = {
+      enable = true;
+      theme = "sugar-candy";
+      wayland.enable = true;
+    };
+    
+    # Network
+    networkmanager.enable = true;
+    
+    # Printing
+    printing.enable = true;
+    
+    # Enable CUPS
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+    
+    # SSH (optional, useful for remote management)
+    openssh = {
+      enable = true;
+      settings.PermitRootLogin = "no";
+    };
+    
+    # LACT for GPU control
+    lact = {
+      enable = true;
+    };
+  };
+
+  # === PROGRAMS ===
+  programs = {
+    # Hyprland
+    hyprland = {
+      enable = true;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      xwayland.enable = true;
+    };
+    
+    # Steam
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+      gamescopeSession.enable = true;
+    };
+    
+    # Gamemode
+    gamemode = {
+      enable = true;
+      settings = {
+        general = {
+          renice = 10;
+        };
+        gpu = {
+          apply_gpu_optimisations = "accept-responsibility";
+          gpu_device = 0;
+          amd_performance_level = "high";
+        };
+      };
+    };
+    
+    # Zsh
+    zsh.enable = true;
+    
+    # FUSE for some games
+    fuse.userAllowOther = true;
+  };
+
+  # === FONTS ===
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    jetbrains-mono
+    fira-code
+    (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
+  ];
+
+  # === FLATPAK ===
+  services.flatpak.enable = true;
+  
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    config.common.default = "*";
+  };
+
+  # === SECURITY ===
+  security = {
+    rtkit.enable = true; # For PipeWire
+    polkit.enable = true;
+    
+    # Allow passwordless sudo for wheel group (optional)
+    sudo.wheelNeedsPassword = false;
+  };
+
+  # === NETWORKING & FIREWALL ===
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 
+      22       # SSH
+      27015 27016  # Various games
+      3478 3479    # PSN
+      3659         # Battle.net
+      6112         # Blizzard
+    ];
+    allowedUDPPorts = [ 
+      2456 2457 2458  # Valheim
+      27015 27016     # Various games
+      3478 3479       # PSN
+      3659            # Battle.net
+      6112            # Blizzard
+      8767 27036      # Steam
+    ];
+  };
+
+  # === PERFORMANCE ===
+  powerManagement.cpuFreqGovernor = "performance";
+  
+  # ZRAM for better performance with 16GB RAM
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+  };
+
+  system.stateVersion = "24.11";
+}

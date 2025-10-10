@@ -1,0 +1,74 @@
+{
+  description = "WehttamSnaps NixOS Configuration - Gaming & Streaming Workstation";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    hyprland.url = "github:hyprwm/Hyprland";
+    
+    nix-colors.url = "github:misterio77/nix-colors";
+    
+    # Chaotic-CX for bleeding-edge packages
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    
+    # Noctalia shell overlay
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      flake = false;
+    };
+  };
+
+  outputs = { self, nixpkgs, home-manager, chaotic, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      nixosConfigurations = {
+        snaps-pc = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            # Hardware & Core System
+            ./hosts/snaps-pc/hardware-configuration.nix
+            ./hosts/snaps-pc/configuration.nix
+            
+            # Chaotic-CX for gaming packages
+            chaotic.nixosModules.default
+            
+            # Custom modules
+            ./modules/nixos/gaming.nix
+            ./modules/nixos/audio.nix
+            ./modules/nixos/amd-optimizations.nix
+            ./modules/nixos/grub-jarvis.nix
+            
+            # Home Manager as NixOS module
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                extraSpecialArgs = { inherit inputs; };
+                users.wehttamsnaps = import ./home-manager/home.nix;
+                useGlobalPkgs = true;
+                useUserPackages = true;
+              };
+            }
+          ];
+        };
+      };
+      
+      # Dev shell for working on configs
+      devShells.${system}.default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          git
+          nil # Nix LSP
+          nixpkgs-fmt
+          home-manager
+        ];
+      };
+    };
+}

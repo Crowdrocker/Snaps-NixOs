@@ -1,0 +1,308 @@
+{ config, pkgs, ... }:
+
+{
+  wayland.windowManager.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    systemd.enable = true;
+
+    settings = {
+      # === MONITORS ===
+      monitor = [
+        "DP-1,1920x1080@60,0x0,1"  # Adjust to your monitor
+        ",preferred,auto,1"
+      ];
+
+      # === ENVIRONMENT VARIABLES ===
+      env = [
+        "XCURSOR_SIZE,24"
+        "HYPRCURSOR_SIZE,24"
+
+        # AMD GPU
+        "AMD_VULKAN_ICD,RADV"
+        "RADV_PERFTEST,gpl"
+      ];
+
+      # === AUTOSTART ===
+      exec-once = [
+        # Authentication agent
+        "${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1"
+
+        # Noctalia shell (Quickshell)
+        "quickshell"
+
+        # Wallpaper
+        "hyprpaper"
+
+        # Audio
+        "pipewire"
+        "wireplumber"
+
+        # Notifications
+        "dunst"
+
+        # Network manager
+        "nm-applet"
+
+        # J.A.R.V.I.S. startup sound
+        "sleep 2 && mpv --no-video ~/.local/share/sounds/jarvis/jarvis-startup.mp3"
+      ];
+
+      # === INPUT ===
+      input = {
+        kb_layout = "us";
+        follow_mouse = 1;
+        sensitivity = 0;
+
+        touchpad = {
+          natural_scroll = false;
+        };
+      };
+
+      # === GENERAL ===
+      general = {
+        gaps_in = 5;
+        gaps_out = 10;
+        border_size = 2;
+
+        # WehttamSnaps brand colors
+        "col.active_border" = "rgba(8a2be2ee) rgba(00ffffee) 45deg";
+        "col.inactive_border" = "rgba(595959aa)";
+
+        layout = "dwindle";
+        allow_tearing = false;
+      };
+
+      # === DECORATION ===
+      decoration = {
+        rounding = 8;
+
+        blur = {
+          enabled = true;
+          size = 6;
+          passes = 3;
+          new_optimizations = true;
+          xray = true;
+        };
+
+        drop_shadow = true;
+        shadow_range = 30;
+        shadow_render_power = 3;
+        "col.shadow" = "rgba(1a1a1aee)";
+
+        active_opacity = 1.0;
+        inactive_opacity = 0.95;
+      };
+
+      # === ANIMATIONS ===
+      animations = {
+        enabled = true;
+
+        bezier = [
+          "wind, 0.05, 0.9, 0.1, 1.05"
+          "winIn, 0.1, 1.1, 0.1, 1.1"
+          "winOut, 0.3, -0.3, 0, 1"
+          "liner, 1, 1, 1, 1"
+        ];
+
+        animation = [
+          "windows, 1, 6, wind, slide"
+          "windowsIn, 1, 6, winIn, slide"
+          "windowsOut, 1, 5, winOut, slide"
+          "windowsMove, 1, 5, wind, slide"
+          "border, 1, 1, liner"
+          "borderangle, 1, 30, liner, loop"
+          "fade, 1, 10, default"
+          "workspaces, 1, 5, wind"
+        ];
+      };
+
+      # === LAYOUTS ===
+      dwindle = {
+        pseudotile = true;
+        preserve_split = true;
+        no_gaps_when_only = false;
+      };
+
+      master = {
+        new_is_master = true;
+      };
+
+      # === GESTURES ===
+      gestures = {
+        workspace_swipe = true;
+        workspace_swipe_fingers = 3;
+      };
+
+      # === MISC ===
+      misc = {
+        force_default_wallpaper = 0;
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
+        vfr = true;
+        vrr = 1;
+      };
+
+      # === WINDOW RULES ===
+      windowrulev2 = [
+        # Gaming - maximize and use gamemode
+        "workspace 3 silent, class:^(steam)$"
+        "workspace 3 silent, class:^(lutris)$"
+        "workspace 4 silent, title:^(Cyberpunk 2077)$"
+        "workspace 4 silent, title:^(The Division)$"
+
+        # Floating windows
+        "float, class:^(pavucontrol)$"
+        "float, class:^(qpwgraph)$"
+        "float, class:^(nm-connection-editor)$"
+        "float, title:^(Picture-in-Picture)$"
+
+        # Opacity rules
+        "opacity 0.9 0.9, class:^(kitty)$"
+        "opacity 0.9 0.9, class:^(thunar)$"
+        "opacity 0.95 0.95, class:^(discord)$"
+
+        # Workspace assignments
+        "workspace 1, class:^(firefox)$"
+        "workspace 2, class:^(code)$"
+        "workspace 5, class:^(obs)$"
+        "workspace 6, class:^(discord)$"
+        "workspace 7, class:^(gimp)$"
+        "workspace 7, class:^(inkscape)$"
+        "workspace 7, class:^(krita)$"
+
+        # Tearing for gaming (reduce input lag)
+        "immediate, class:^(cs2)$"
+        "immediate, title:^(Cyberpunk 2077)$"
+      ];
+
+      # === KEYBINDINGS ===
+      "$mod" = "SUPER";
+
+      bind = [
+        # === BASIC ===
+        "$mod, Q, exec, kitty"
+        "$mod, C, killactive,"
+        "$mod, M, exit,"
+        "$mod, E, exec, thunar"
+        "$mod, V, togglefloating,"
+        "$mod, R, exec, fuzzel"
+        "$mod, P, pseudo,"
+        "$mod, J, togglesplit,"
+        "$mod, F, fullscreen, 0"
+
+        # === SCREENSHOTS ===
+        ", Print, exec, grim -g \"$(slurp)\" - | swappy -f -"
+        "$mod, Print, exec, grim - | swappy -f -"
+
+        # === AUDIO ===
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioPlay, exec, playerctl play-pause"
+        ", XF86AudioNext, exec, playerctl next"
+        ", XF86AudioPrev, exec, playerctl previous"
+
+        # === FOCUS ===
+        "$mod, left, movefocus, l"
+        "$mod, right, movefocus, r"
+        "$mod, up, movefocus, u"
+        "$mod, down, movefocus, d"
+        "$mod, H, movefocus, l"
+        "$mod, L, movefocus, r"
+        "$mod, K, movefocus, u"
+        "$mod, J, movefocus, d"
+
+        # === MOVE WINDOWS ===
+        "$mod SHIFT, left, movewindow, l"
+        "$mod SHIFT, right, movewindow, r"
+        "$mod SHIFT, up, movewindow, u"
+        "$mod SHIFT, down, movewindow, d"
+        "$mod SHIFT, H, movewindow, l"
+        "$mod SHIFT, L, movewindow, r"
+        "$mod SHIFT, K, movewindow, u"
+        "$mod SHIFT, J, movewindow, d"
+
+        # === WORKSPACES ===
+        "$mod, 1, workspace, 1"
+        "$mod, 2, workspace, 2"
+        "$mod, 3, workspace, 3"
+        "$mod, 4, workspace, 4"
+        "$mod, 5, workspace, 5"
+        "$mod, 6, workspace, 6"
+        "$mod, 7, workspace, 7"
+        "$mod, 8, workspace, 8"
+        "$mod, 9, workspace, 9"
+        "$mod, 0, workspace, 10"
+
+        # === MOVE TO WORKSPACE ===
+        "$mod SHIFT, 1, movetoworkspace, 1"
+        "$mod SHIFT, 2, movetoworkspace, 2"
+        "$mod SHIFT, 3, movetoworkspace, 3"
+        "$mod SHIFT, 4, movetoworkspace, 4"
+        "$mod SHIFT, 5, movetoworkspace, 5"
+        "$mod SHIFT, 6, movetoworkspace, 6"
+        "$mod SHIFT, 7, movetoworkspace, 7"
+        "$mod SHIFT, 8, movetoworkspace, 8"
+        "$mod SHIFT, 9, movetoworkspace, 9"
+        "$mod SHIFT, 0, movetoworkspace, 10"
+
+        # === SPECIAL WORKSPACES ===
+        "$mod, S, togglespecialworkspace, magic"
+        "$mod SHIFT, S, movetoworkspace, special:magic"
+
+        # === CUSTOM LAUNCHES ===
+        "$mod, B, exec, firefox"
+        "$mod, D, exec, discord"
+        "$mod SHIFT, E, exec, thunar"
+
+        # === GAMING TOGGLES ===
+        "$mod, G, exec, ~/.local/bin/toggle-gaming-mode.sh"
+        "$mod SHIFT, G, exec, gamescope -W 1920 -H 1080 -f -- steam"
+
+        # === QUICKSHELL WIDGETS ===
+        "$mod, W, exec, quickshell -c ~/.config/quickshell/work-launcher.qml"
+        "$mod SHIFT, W, exec, quickshell -c ~/.config/quickshell/game-launcher.qml"
+
+        # === POWER MENU ===
+        "$mod, X, exec, ~/.local/bin/jarvis-power-menu.sh"
+      ];
+
+      # Mouse bindings
+      bindm = [
+        "$mod, mouse:272, movewindow"
+        "$mod, mouse:273, resizewindow"
+      ];
+
+      # Resize mode bindings
+      binde = [
+        "$mod CTRL, left, resizeactive, -20 0"
+        "$mod CTRL, right, resizeactive, 20 0"
+        "$mod CTRL, up, resizeactive, 0 -20"
+        "$mod CTRL, down, resizeactive, 0 20"
+        "$mod CTRL, H, resizeactive, -20 0"
+        "$mod CTRL, L, resizeactive, 20 0"
+        "$mod CTRL, K, resizeactive, 0 -20"
+        "$mod CTRL, J, resizeactive, 0 20"
+      ];
+    };
+
+    # Extra configuration files
+    extraConfig = ''
+      # Source additional configs if they exist
+      source = ~/.config/hypr/colors.conf
+      source = ~/.config/hypr/monitors.conf
+      source = ~/.config/hypr/custom.conf
+    '';
+  };
+
+  # === HYPRPAPER (Wallpaper) ===
+  home.file.".config/hypr/hyprpaper.conf".text = ''
+    preload = ~/.config/wallpapers/wehttamsnaps-main.png
+    wallpaper = ,~/.config/wallpapers/wehttamsnaps-main.png
+
+    splash = false
+    ipc = on
+  '';
+}
+

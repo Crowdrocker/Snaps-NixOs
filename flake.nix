@@ -1,93 +1,71 @@
 {
-  description = "WehttamSnaps NixOS Gaming & Workstation Configuration";
+  description = "WehttamSnaps NixOS Configuration - Gaming & Streaming Workstation";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
-    chaotic = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    
+
+    hyprland.url = "github:hyprwm/Hyprland";
+
     nix-colors.url = "github:misterio77/nix-colors";
-    
-    niri = {
-      url = "github:YaLTeR/niri";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    
-    noctalia-shell = {
+
+    # Chaotic-CX for bleeding-edge packages
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+
+    # Noctalia shell overlay
+    noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
-    
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, unstable, home-manager, chaotic, nix-colors, niri, noctalia-shell, flake-utils }:
+  outputs = { self, nixpkgs, home-manager, chaotic, ... }@inputs:
     let
       system = "x86_64-linux";
-      
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [
-          chaotic.overlays.default
-          nix-colors.overlays.default
-          niri.overlays.default
-        ];
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      nixosConfigurations = {
+        snaps-pc = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            # Hardware & Core System
+            ./hosts/snaps-pc/hardware-configuration.nix
+            ./hosts/snaps-pc/configuration.nix
+
+            # Chaotic-CX for gaming packages
+            chaotic.nixosModules.default
+
+            # Custom modules
+            ./modules/nixos/gaming.nix
+            ./modules/nixos/audio.nix
+            ./modules/nixos/amd-optimizations.nix
+            ./modules/nixos/grub-jarvis.nix
+
+            # Home Manager as NixOS module
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                extraSpecialArgs = { inherit inputs; };
+                users.wehttamsnaps = import ./home-manager/home.nix;
+                useGlobalPkgs = true;
+                useUserPackages = true;
+              };
+            }
+          ];
+        };
       };
-      
-      lib = nixpkgs.lib;
-      
-      username = "wehttamsnaps";
-      hostname = "snaps-pc";
-      
-    in {
-      nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit username hostname; };
-        
-        modules = [
-          ./hosts/${hostname}/configuration.nix
-          ./hosts/${hostname}/hardware-configuration.nix
-          
-          ./modules/system
-          ./modules/gaming
-          ./modules/audio
-          ./modules/graphics
-          
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username} = import ./home-manager/home.nix;
-            home-manager.extraSpecialArgs = { inherit username hostname; };
-          }
-        ];
-      };
-      
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = { inherit username hostname; };
-        modules = [
-          ./home-manager/home.nix
-        ];
-      };
-      
-      packages.${system} = {
-        default = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
-      };
-      
+
+      # Dev shell for working on configs
       devShells.${system}.default = pkgs.mkShell {
         buildInputs = with pkgs; [
           git
+          nil # Nix LSP
           nixpkgs-fmt
           home-manager
         ];
