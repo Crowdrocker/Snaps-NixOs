@@ -1,0 +1,233 @@
+Essential Extras
+##################### Essential Packages I'd like to add if possible ########################
+    # Core system
+    linux
+    linux-firmware
+    efibootmgr
+    efitools
+    grub2
+    sudo
+    man-db
+    man-pages
+
+    # File systems
+    btrfs-progs
+    dosfstools
+    exfat
+    ntfs3g
+    xfsprogs
+    lvm2
+    udisks2
+
+    # Network
+    networkmanager
+    wget
+    curl
+    inetutils
+    ethtool
+    dhcpcd
+    dnsmasq
+    iwd
+
+    # Development
+    git
+    github-cli
+    python3
+    nodejs
+    rustc
+    cargo
+    gcc
+    gdb
+    valgrind
+
+    # System utilities
+    htop
+    btop
+    neofetch
+    fastfetch
+    duf
+    eza
+    bat
+    fd
+    ripgrep
+    fzf
+    tree
+    tldr
+    tmux
+    screen
+
+    # Archives
+    p7zip
+    unzip
+    unrar
+
+    # Text editors
+    kate
+    gedit
+
+    # Disk utility
+    gnome.gnome-disk-utility
+
+    # Flatpak
+    flatpak
+
+    # Browsers
+    firefox
+    chromium
+    google-chrome
+
+    # Media
+    vlc
+    mpv
+    ffmpeg
+    gimp
+    inkscape
+    blender
+    audacity
+
+    # Office
+    libreoffice
+    okular
+
+    # Terminal
+    alacritty
+    kitty
+    foot
+
+    # Shell
+    zsh
+    fish
+    starship
+
+    # Fonts
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    inter-font
+    terminus_font
+    jetbrains-mono
+    fira-code
+    nerdfonts
+
+    # Theming
+    gtk3
+    qt5.qtwayland
+    qt6.qtwayland
+
+    # Audio
+    pipewire
+    pulseaudio
+    pavucontrol
+
+    # Printing
+    cups
+    cups-filters
+
+    # ===== GAMING ESSENTIALS =====
+    # Steam and gaming
+    steam
+    steam-run
+    steam-original
+    gamescope
+    gamemode
+    mangohud
+    protontricks
+    lutris
+    wine
+    winetricks
+
+    # Gaming dependencies
+    vulkan-tools
+    vulkan-loader
+    vulkan-validation-layers
+    dxvk
+    vkd3d
+
+    # Graphics
+    nvidia-vaapi-driver
+    vaapiVdpau
+
+    # Controllers
+    joycond
+    piper
+
+    # Game launchers
+    heroic
+    bottles
+
+      # Enable Flatpak support
+  services.flatpak.enable = true;
+
+  # Gaming-specific services
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+  };
+
+  # Enable gamemode
+  programs.gamemode.enable = true;
+
+  # Gaming optimizations
+  nix.settings = {
+    auto-optimise-store = true;
+    experimental-features = [ "nix-command" "flakes" ];
+  };
+
+  # Enable necessary services
+  services = {
+    printing.enable = true;
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
+    openssh.enable = true;
+
+    # For controllers
+    udev.extraRules = ''
+      # Steam Controller
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
+      # Steam Controller in wired mode
+      KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
+      # Steam Controller in wireless mode
+      KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
+    '';
+  };
+
+  # Open ports for gaming
+  networking.firewall = {
+    enable = true;
+    allowedUDPPorts = [
+      2456 2457 2458  # Valheim
+      27015 27016     # Various games
+      3478 3479       # PSN
+      3659            # Battle.net
+      6112            # Blizzard
+      8767 27036      # Steam
+    ];
+    allowedTCPPorts = [
+      27015 27016     # Various games
+      3478 3479       # PSN
+      3659            # Battle.net
+      6112            # Blizzard
+    ];
+  };
+
+  # Performance optimizations
+  powerManagement.cpuFreqGovernor = "performance";
+
+  # For some games that need FUSE
+  programs.fuse.userAllowOther = true;
+
+additional gaming apps:
+# Add Flathub repository
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Install gaming Flatpaks if needed
+flatpak install flathub com.valvesoftware.Steam
+flatpak install flathub net.lutris.Lutris
+flatpak install flathub com.heroicgameslauncher.hgl

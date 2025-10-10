@@ -1,544 +1,478 @@
-# WehttamSnaps Streaming Guide
+# Streaming Guide - WehttamSnaps NixOS Setup
 
-Complete guide to streaming on Twitch with OBS Studio.
+Complete streaming setup guide for OBS Studio with advanced audio routing.
 
-## Table of Contents
-1. [OBS Studio Setup](#obs-studio-setup)
-2. [Audio Configuration](#audio-configuration)
-3. [Scene Creation](#scene-creation)
-4. [Streaming Settings](#streaming-settings)
-5. [Twitch Integration](#twitch-integration)
-6. [Tips & Tricks](#tips--tricks)
+## 🎬 Overview
+
+This setup provides professional streaming capabilities with:
+- **OBS Studio** with custom scenes
+- **Advanced audio routing** via qpwgraph
+- **Multi-source mixing** (game, mic, music, alerts)
+- **Stream keybindings** and shortcuts
+- **Custom overlays** and branding
+
+## 🚀 Quick Setup
+
+### 1. Install OBS Studio
+```bash
+# OBS Studio is pre-installed
+# Launch: Applications → Multimedia → OBS Studio
+# Or: obs &
+```
+
+### 2. Audio Setup
+```bash
+# Ensure audio routing is configured
+qpwgraph &
+```
+
+### 3. Launch Streaming Mode
+```bash
+# Activate streaming mode
+jarvis streaming
+
+# Or manually
+obs &
+```
+
+## 🎙️ Audio Routing for Streaming
+
+### Virtual Audio Devices
+```bash
+# Create streaming audio sink
+pactl load-module module-null-sink sink_name=stream_mix sink_properties=device.description="Stream Mix"
+
+# Create monitor sink
+pactl load-module module-null-sink sink_name=monitor_mix sink_properties=device.description="Monitor Mix"
+
+# Create chat sink
+pactl load-module module-null-sink sink_name=chat_mix sink_properties=device.description="Chat Audio"
+```
+
+### Audio Routing Diagram
+```
+[Game Audio] ──┐
+               ├── [Stream Mix] ─── [OBS Audio Input]
+[Microphone] ──┤
+               ├── [Monitor Mix] ── [Headphones]
+[Music] -------┤
+               ├── [Chat Mix] ───── [Discord/Chat]
+[System] ------┘
+```
+
+## 📹 OBS Studio Configuration
+
+### Scene Setup
+
+#### Scene 1: Gaming
+```
+Sources:
+├── Game Capture (Primary)
+├── Webcam (Bottom-right corner)
+├── Alerts (Top-center)
+├── Chat Box (Left side)
+└── Stream Info (Top-right)
+```
+
+#### Scene 2: Just Chatting
+```
+Sources:
+├── Webcam (Center)
+├── Chat Box (Right side)
+├── Recent Followers (Left side)
+├── Stream Info (Top)
+└── Background (Animated/Static)
+```
+
+#### Scene 3: BRB/AFK
+```
+Sources:
+├── BRB Message (Center)
+├── Music Visualizer
+├── Chat Box (Bottom)
+└── Social Media Links
+```
+
+#### Scene 4: Starting Soon
+```
+Sources:
+├── Countdown Timer
+├── Background Video
+├── Social Media Links
+├── Recent Donations
+└── Stream Schedule
+```
+
+### Audio Sources
+
+#### Primary Audio Sources
+1. **Desktop Audio** (Game sounds, system audio)
+2. **Microphone** (Voice commentary)
+3. **Music** (Background music)
+4. **Alerts** (Followers, donations, subs)
+
+#### Audio Routing in OBS
+```
+OBS Audio Sources:
+├── Desktop Audio → Stream Mix
+├── Mic/Aux → Microphone
+├── Music → Music Source
+├── Alerts → Alert Source
+└── Chat → Chat Source
+```
+
+### Stream Settings
+
+#### Video Settings
+```yaml
+Base (Canvas) Resolution: 1920x1080
+Output (Scaled) Resolution: 1280x720
+FPS: 60
+```
+
+#### Output Settings
+```yaml
+Encoder: x264 (CPU)
+Bitrate: 6000 kbps
+Keyframe Interval: 2
+Preset: veryfast
+Profile: high
+```
+
+#### Audio Settings
+```yaml
+Sample Rate: 48 kHz
+Channels: Stereo
+Desktop Audio: Stream Mix
+Mic/Aux: Microphone
+```
+
+## 🎛️ Audio Configuration
+
+### OBS Audio Routing
+
+#### 1. Desktop Audio Setup
+```bash
+# Route desktop audio to OBS
+# In OBS → Settings → Audio
+# Desktop Audio: Stream Mix
+```
+
+#### 2. Microphone Setup
+```bash
+# Microphone settings in OBS
+# Filters:
+# - Noise Suppression (-30dB)
+# - Noise Gate (-35dB open, -40dB close)
+# - Compressor (3:1 ratio, -18dB threshold)
+```
+
+#### 3. Music Setup
+```bash
+# Music source routing
+# Create music sink for Spotify
+pactl load-module module-null-sink sink_name=music_source sink_properties=device.description="Music Source"
+```
+
+#### 4. Alert Sounds
+```bash
+# Alert audio routing
+# Create alert sink
+pactl load-module module-null-sink sink_name=alert_source sink_properties=device.description="Alert Source"
+```
+
+## 🎮 Game Capture Setup
+
+### Game Capture Sources
+
+#### Method 1: Game Capture (Recommended)
+```
+OBS Source: Game Capture
+├── Mode: Capture specific window
+├── Window: [Select game window]
+├── Capture Cursor: Yes
+├── Multi-adapter Compatibility: Yes (for multi-GPU)
+└── Capture Method: Automatic
+```
+
+#### Method 2: Display Capture
+```
+OBS Source: Display Capture
+├── Display: [Primary monitor]
+├── Capture Cursor: Yes
+└── Show cursor: Yes
+```
+
+#### Method 3: Window Capture
+```
+OBS Source: Window Capture
+├── Window: [Select game window]
+├── Capture Method: Automatic
+└── Cursor: Yes
+```
+
+### Game-Specific Settings
+
+#### Cyberpunk 2077
+```
+Window Mode: Borderless
+Resolution: 1920x1080
+VSync: Off
+OBS Capture: Game Capture
+```
+
+#### The Division 2
+```
+Window Mode: Fullscreen
+Resolution: 1920x1080
+VSync: Off
+OBS Capture: Game Capture
+```
+
+## 🎨 Custom Overlays
+
+### Branding Elements
+- **Logo**: WehttamSnaps logo (top-left)
+- **Color Scheme**: Violet-cyan gradient (#8A2BE2 → #00FFFF)
+- **Font**: Inter, JetBrains Mono
+- **Animations**: Smooth transitions
+
+### Alert Widgets
+```bash
+# Install StreamElements
+# Visit: https://streamelements.com/dashboard
+# Copy widget URLs to OBS Browser Source
+```
+
+### Custom Alerts
+```
+Browser Source: Stream Alerts
+├── URL: [Your StreamElements URL]
+├── Width: 1920
+├── Height: 1080
+├── FPS: 30
+└── Shutdown source when not visible: Yes
+```
+
+## ⌨️ Stream Keybindings
+
+### OBS Keybindings
+```
+Start Streaming: Ctrl+F1
+Stop Streaming: Ctrl+Shift+F1
+Start Recording: Ctrl+F2
+Stop Recording: Ctrl+Shift+F2
+Mute/Unmute Mic: Ctrl+M
+Mute/Unmute Desktop: Ctrl+D
+```
+
+### J.A.R.V.I.S. Commands
+```bash
+# Streaming shortcuts
+jarvis streaming                    # Activate streaming mode
+jarvis launch obs                  # Launch OBS
+jarvis audio volume-up             # Increase volume
+jarvis audio volume-down           # Decrease volume
+jarvis audio mute                  # Mute/unmute
+```
+
+### System Keybindings
+```
+Mod+Shift+S: Start/Stop Streaming
+Mod+Shift+R: Start/Stop Recording
+Mod+M: Mute/Unmute Mic
+Mod+D: Mute/Unmute Desktop
+```
+
+## 📊 Stream Monitoring
+
+### Performance Monitoring
+```bash
+# Check system resources
+htop
+radeontop
+nvtop
+
+# Check network
+speedtest-cli
+ping twitch.tv
+```
+
+### Stream Health
+```bash
+# Check stream status
+curl -s https://api.twitch.tv/helix/streams?user_login=wehttamsnaps
+```
+
+## 🎵 Advanced Audio Features
+
+### Noise Suppression
+```bash
+# Install noise suppression
+nix-env -iA nixos.noise-suppression-for-voice
+
+# Create noise suppression filter
+pactl load-module module-ladspa-sink sink_name=mic_clean master=alsa_input.pci-0000_00_1f.3.analog-stereo plugin=noise_suppression label=noise_suppression_mono control=50,50
+```
+
+### Echo Cancellation
+```bash
+# Create echo cancellation
+pactl load-module module-echo-cancel source_master=mic_clean sink_master=alsa_output.pci-0000_00_1f.3.analog-stereo
+```
+
+### Compressor Settings
+```
+Compressor Settings:
+├── Ratio: 3:1
+├── Threshold: -18dB
+├── Attack: 6ms
+├── Release: 60ms
+└── Makeup Gain: +6dB
+```
+
+## 🎮 Game-Specific Streaming Settings
+
+### Cyberpunk 2077
+```yaml
+Game Settings:
+  Resolution: 1920x1080
+  Graphics: Medium
+  VSync: Off
+  FPS Limit: 60
+
+OBS Settings:
+  Capture: Game Capture
+  Audio: Desktop Audio
+  Bitrate: 6000 kbps
+```
+
+### The Division 2
+```yaml
+Game Settings:
+  Resolution: 1920x1080
+  Graphics: High
+  VSync: Off
+  FPS Limit: 60
+
+OBS Settings:
+  Capture: Game Capture
+  Audio: Desktop Audio
+  Bitrate: 6000 kbps
+```
+
+### Fallout 4
+```yaml
+Game Settings:
+  Resolution: 1920x1080
+  Graphics: High
+  VSync: Off
+  FPS Limit: 60
+
+OBS Settings:
+  Capture: Game Capture
+  Audio: Desktop Audio
+  Bitrate: 6000 kbps
+```
+
+## 📱 Mobile Integration
+
+### Stream Deck Mobile
+```bash
+# Install companion app
+# Download from app store
+# Connect to OBS via WebSocket
+```
+
+### Remote Control
+```bash
+# Install OBS WebSocket
+# Configure in OBS → Tools → WebSocket Server Settings
+# Port: 4455
+# Password: [Set secure password]
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Stream Lag/Stuttering
+```bash
+# Check CPU usage
+htop
+
+# Check GPU usage
+radeontop
+
+# Check network
+speedtest-cli
+```
+
+#### Audio Desync
+```bash
+# Restart audio services
+systemctl --user restart pipewire.service
+systemctl --user restart wireplumber.service
+```
+
+#### OBS Crashes
+```bash
+# Check OBS logs
+cat ~/.config/obs-studio/logs/latest.log
+
+# Reset OBS settings
+mv ~/.config/obs-studio ~/.config/obs-studio.backup
+```
+
+### Performance Optimization
+```bash
+# Reduce OBS load
+# Use NVENC if available
+# Lower game settings
+# Close unnecessary applications
+```
+
+## 📊 Analytics
+
+### Stream Metrics
+- **Viewers**: Live viewer count
+- **Followers**: New followers per stream
+- **Chat Activity**: Messages per minute
+- **Stream Duration**: Total stream time
+
+### Export Settings
+```yaml
+Recording Settings:
+  Format: mp4
+  Encoder: x264
+  Bitrate: 8000 kbps
+  Resolution: 1920x1080
+  FPS: 60
+```
+
+## 🎉 Custom Features
+
+### J.A.R.V.I.S. Integration
+```bash
+# Voice alerts
+jarvis streaming        # Activate streaming mode
+jarvis alert "New follower!"  # Custom alerts
+
+# System notifications
+jarvis notify "Stream starting in 5 minutes"
+```
+
+### Custom Scripts
+```bash
+# Stream start script
+~/.config/obs/scripts/stream-start.sh
+
+# Stream end script
+~/.config/obs/scripts/stream-end.sh
+```
 
 ---
 
-## OBS Studio Setup
-
-### Initial Configuration
-
-1. **Launch OBS Studio**
-   ```bash
-   obs
-   # Or press: Mod+Shift+T (activates streaming mode)
-   ```
-
-2. **Run Auto-Configuration Wizard**
-   - First launch will show wizard
-   - Select: "Optimize for streaming"
-   - Service: Twitch
-   - Enter your Twitch stream key
-
-3. **Manual Settings** (if skipping wizard)
-   - Settings → Stream
-   - Service: Twitch
-   - Server: Auto (closest)
-   - Stream Key: (from Twitch dashboard)
-
----
-
-## Audio Configuration
-
-### Set Up Audio Sources
-
-Your system has virtual audio sinks for perfect audio separation!
-
-#### Step 1: Remove Default Audio
-
-1. Settings → Audio
-2. Disable all default desktop audio
-3. We'll add custom sources instead
-
-#### Step 2: Add Virtual Sink Sources
-
-In OBS main window:
-
-1. **Add Game Audio**
-   - Audio Mixer → "+" → Audio Output Capture
-   - Name: "Game Audio"
-   - Device: "Monitor of Game Audio Sink"
-   - Click OK
-
-2. **Add Discord Audio**
-   - Audio Mixer → "+" → Audio Output Capture
-   - Name: "Discord"
-   - Device: "Monitor of Discord Audio Sink"
-   - Click OK
-
-3. **Add Music Audio**
-   - Audio Mixer → "+" → Audio Output Capture
-   - Name: "Music"
-   - Device: "Monitor of Spotify Audio Sink"
-   - Click OK
-
-4. **Add Microphone**
-   - Audio Mixer → "+" → Audio Input Capture
-   - Name: "Microphone"
-   - Device: Your microphone
-   - Click OK
-
-#### Step 3: Configure Audio Filters
-
-For each audio source:
-
-**Microphone Filters:**
-1. Right-click "Microphone" → Filters
-2. Add:
-   - **Noise Suppression** (RNNoise)
-     - Method: RNNoise
-   - **Noise Gate**
-     - Close Threshold: -50 dB
-     - Open Threshold: -45 dB
-   - **Compressor**
-     - Ratio: 3:1
-     - Threshold: -18 dB
-     - Attack: 6 ms
-     - Release: 60 ms
-   - **Gain**
-     - Gain: +5 dB (adjust as needed)
-
-**Game Audio Filters:**
-1. Right-click "Game Audio" → Filters
-2. Add:
-   - **Compressor**
-     - Ratio: 2:1
-     - Threshold: -20 dB
-   - **Limiter**
-     - Threshold: -6 dB
-
-**Discord Filters:**
-1. Right-click "Discord" → Filters
-2. Add:
-   - **Noise Suppression** (RNNoise)
-   - **Compressor**
-     - Ratio: 3:1
-     - Threshold: -18 dB
-
-#### Step 4: Set Audio Levels
-
-Recommended levels (adjust to taste):
-- **Microphone**: -12 dB to -6 dB (when talking)
-- **Game Audio**: -18 dB to -12 dB
-- **Discord**: -24 dB to -18 dB
-- **Music**: -30 dB to -24 dB (background)
-
----
-
-## Scene Creation
-
-### Scene 1: Starting Soon
-
-**Purpose**: Pre-stream countdown
-
-**Elements:**
-1. **Background Image**
-   - Source: Image
-   - File: Your "Starting Soon" graphic
-   - Transform: Fit to screen
-
-2. **Countdown Timer** (optional)
-   - Source: Text (FreeType 2)
-   - Text: "Stream starts in 5 minutes"
-   - Font: Large, bold
-   - Position: Center
-
-3. **Music**
-   - Enable "Music" audio source
-   - Disable game audio
-
-### Scene 2: Gameplay
-
-**Purpose**: Main gaming scene
-
-**Elements:**
-1. **Game Capture**
-   - Source: Window Capture
-   - Window: [Auto] (captures focused window)
-   - Transform: Fit to screen
-
-2. **Webcam** (if you have one)
-   - Source: Video Capture Device
-   - Device: Your webcam
-   - Transform: Bottom-right corner, 320x240
-
-3. **Overlay** (optional)
-   - Source: Image
-   - File: Your stream overlay PNG
-   - Transform: Full screen
-
-4. **Chat Box** (optional)
-   - Source: Browser
-   - URL: Twitch chat widget
-   - Width: 400, Height: 600
-   - Position: Right side
-
-5. **Audio Visualizer** (optional)
-   - Source: Audio Visualizer plugin
-   - Audio Source: Game Audio
-
-**Audio:**
-- Enable: Game Audio, Microphone, Discord
-- Disable: Music (or keep very low)
-
-### Scene 3: BRB (Be Right Back)
-
-**Purpose**: Bathroom breaks, etc.
-
-**Elements:**
-1. **Background Image**
-   - Source: Image
-   - File: Your "BRB" graphic
-   - Transform: Fit to screen
-
-2. **Text**
-   - Source: Text (FreeType 2)
-   - Text: "Be Right Back!"
-   - Font: Large
-   - Position: Center
-
-3. **Music**
-   - Enable "Music" audio source
-   - Disable game audio
-
-### Scene 4: Ending
-
-**Purpose**: Stream outro
-
-**Elements:**
-1. **Background Image**
-   - Source: Image
-   - File: Your "Thanks for watching" graphic
-   - Transform: Fit to screen
-
-2. **Social Media**
-   - Source: Text (FreeType 2)
-   - Text: Your social links
-   - Position: Center
-
-3. **Music**
-   - Enable "Music" audio source
-
----
-
-## Streaming Settings
-
-### Video Settings
-
-Settings → Video:
-
-**Base (Canvas) Resolution**: 1920x1080
-**Output (Scaled) Resolution**: 1920x1080
-**Downscale Filter**: Lanczos (best quality)
-**FPS**: 60 (or 30 for slower internet)
-
-### Output Settings
-
-Settings → Output:
-
-**Output Mode**: Advanced
-
-**Streaming Tab:**
-- **Encoder**: x264 (CPU) or VAAPI (GPU)
-- **Rate Control**: CBR
-- **Bitrate**: 6000 Kbps (adjust based on upload speed)
-- **Keyframe Interval**: 2
-- **CPU Usage Preset**: veryfast (or faster if CPU struggles)
-- **Profile**: high
-- **Tune**: zerolatency
-
-**Recording Tab** (optional):
-- **Type**: Standard
-- **Recording Path**: /run/media/wehttamsnaps/LINUXDRIVE-1/Recordings
-- **Recording Format**: mkv
-- **Encoder**: Same as streaming
-
-### Advanced Settings
-
-Settings → Advanced:
-
-**Process Priority**: High
-**Renderer**: OpenGL
-**Color Format**: NV12
-**Color Space**: 709
-**Color Range**: Partial
-
----
-
-## Twitch Integration
-
-### Get Your Stream Key
-
-1. Go to https://dashboard.twitch.tv/
-2. Settings → Stream
-3. Copy "Primary Stream Key"
-4. In OBS: Settings → Stream → Stream Key
-
-### Set Up Chat
-
-**Option 1: Browser Source**
-1. Add Browser source to scene
-2. URL: `https://www.twitch.tv/popout/[YOUR_USERNAME]/chat`
-3. Width: 400, Height: 600
-
-**Option 2: Separate Window**
-- Open Twitch chat in Firefox
-- Position on second monitor (if available)
-
-### Stream Information
-
-Before streaming:
-1. Go to Twitch dashboard
-2. Set stream title
-3. Select category/game
-4. Add tags
-5. Set up stream notifications
-
----
-
-## Keybindings for Streaming
-
-### OBS Hotkeys
-
-Settings → Hotkeys:
-
-**Recommended Hotkeys:**
-- **Start Streaming**: F9
-- **Stop Streaming**: F10
-- **Start Recording**: F11
-- **Stop Recording**: F12
-- **Mute Microphone**: Ctrl+M
-- **Push to Talk**: Left Alt (hold)
-- **Scene 1 (Starting Soon)**: Ctrl+1
-- **Scene 2 (Gameplay)**: Ctrl+2
-- **Scene 3 (BRB)**: Ctrl+3
-- **Scene 4 (Ending)**: Ctrl+4
-
-### System Hotkeys
-
-Already configured:
-- **Activate Streaming Mode**: Mod+Shift+T
-  - Launches OBS
-  - Plays J.A.R.V.I.S. sound
-  - Optimizes system
-
----
-
-## Tips & Tricks
-
-### Optimize Performance
-
-1. **Use Hardware Encoding** (if available)
-   - AMD: VAAPI
-   - Reduces CPU load
-
-2. **Lower Game Settings**
-   - Reduce graphics quality slightly
-   - Maintain 60 FPS in-game
-
-3. **Close Background Apps**
-   - Close Firefox, Discord (if not needed)
-   - Free up resources
-
-4. **Monitor Performance**
-   - Watch OBS stats (bottom right)
-   - CPU usage should be < 80%
-   - Dropped frames should be < 1%
-
-### Audio Mixing Tips
-
-1. **Game Audio**: Loudest, but not overpowering
-2. **Your Voice**: Clear and prominent
-3. **Discord**: Lower than your voice
-4. **Music**: Background level only
-
-**Test Your Mix:**
-- Record a test stream
-- Watch it back
-- Adjust levels accordingly
-
-### Engagement Tips
-
-1. **Talk to Chat**
-   - Read chat regularly
-   - Respond to questions
-   - Thank new followers
-
-2. **Be Consistent**
-   - Stream on schedule
-   - Same days/times each week
-
-3. **Have Fun**
-   - Enjoy the games you play
-   - Your enthusiasm is contagious
-
-### Stream Quality Checklist
-
-Before going live:
-- [ ] Audio levels correct
-- [ ] Microphone working
-- [ ] Game audio routing correctly
-- [ ] Webcam positioned (if using)
-- [ ] Overlay displaying correctly
-- [ ] Stream title/category set
-- [ ] Chat visible
-- [ ] Notifications enabled
-
----
-
-## Troubleshooting
-
-### High CPU Usage
-
-**Solution 1**: Lower encoder preset
-- Settings → Output → CPU Usage Preset: superfast
-
-**Solution 2**: Reduce resolution
-- Settings → Video → Output Resolution: 1280x720
-
-**Solution 3**: Lower FPS
-- Settings → Video → FPS: 30
-
-### Dropped Frames
-
-**Cause**: Internet upload speed too low
-
-**Solution**:
-- Lower bitrate (Settings → Output → Bitrate)
-- Test your upload speed: https://speedtest.net/
-- Recommended: 7+ Mbps upload for 6000 Kbps stream
-
-### Audio Desync
-
-**Solution**:
-- Right-click audio source → Advanced Audio Properties
-- Adjust "Sync Offset" (try +100ms or -100ms)
-
-### Game Not Capturing
-
-**Solution 1**: Use Window Capture instead of Game Capture
-**Solution 2**: Run OBS as admin (not recommended on NixOS)
-**Solution 3**: Use Display Capture as fallback
-
----
-
-## Stream Templates
-
-### Free Resources
-
-**Graphics:**
-- https://nerdordie.com/
-- https://streamlabs.com/
-- https://own3d.tv/
-
-**Overlays:**
-- https://streamelements.com/
-- https://streamlabs.com/
-
-**Alerts:**
-- https://streamelements.com/
-- https://streamlabs.com/
-
-### Create Your Own
-
-Use GIMP or Inkscape to create:
-- Starting Soon screen
-- BRB screen
-- Ending screen
-- Overlays
-- Alerts
-
-**Recommended Sizes:**
-- Full screen graphics: 1920x1080
-- Overlays: 1920x1080 (with transparency)
-- Webcam border: 320x240 + border
-
----
-
-## Advanced Features
-
-### Stream Deck Integration
-
-If you have a Stream Deck:
-1. Install obs-websocket plugin
-2. Configure Stream Deck software
-3. Create buttons for scenes, sources, etc.
-
-### Multi-Platform Streaming
-
-Stream to multiple platforms:
-1. Use Restream.io or similar
-2. Configure in OBS: Settings → Stream
-3. Enter Restream RTMP URL
-
-### Recording While Streaming
-
-Settings → Output → Recording:
-- Enable recording
-- Save to: /run/media/wehttamsnaps/LINUXDRIVE-1/Recordings
-- Use same encoder as streaming
-
----
-
-## Streaming Checklist
-
-### Pre-Stream (30 minutes before)
-- [ ] Test audio levels
-- [ ] Test microphone
-- [ ] Test game capture
-- [ ] Set stream title/category
-- [ ] Post on social media
-- [ ] Start "Starting Soon" scene
-
-### During Stream
-- [ ] Monitor chat
-- [ ] Watch for technical issues
-- [ ] Engage with viewers
-- [ ] Have fun!
-
-### Post-Stream
-- [ ] Thank viewers
-- [ ] Save VOD highlights
-- [ ] Post clips on social media
-- [ ] Review stream for improvements
-
----
-
-## Your Streaming Setup
-
-### Workspace 6: Streaming
-
-Press `Mod+6` to switch to streaming workspace
-
-**Layout:**
-- OBS Studio (main window)
-- Twitch chat (browser)
-- Discord (if needed)
-- Game (on workspace 5)
-
-### Quick Streaming Workflow
-
-1. Press `Mod+Shift+T` (activates streaming mode)
-2. Press `Mod+6` (switch to streaming workspace)
-3. Set up OBS scenes
-4. Press `Mod+5` (switch to gaming workspace)
-5. Launch game
-6. Press `Mod+6` (back to OBS)
-7. Start stream (F9)
-8. Press `Mod+5` (back to game)
-9. Stream and have fun!
-10. Press `Mod+6` (back to OBS)
-11. Stop stream (F10)
-
----
-
-## Resources
-
-- **OBS Studio**: https://obsproject.com/
-- **Twitch Creator Camp**: https://www.twitch.tv/creatorcamp
-- **Streaming Guides**: https://streamscheme.com/
-- **WehttamSnaps Discord**: https://discord.gg/nTaknDvdUA
-
----
-
-**Happy Streaming!** 📡
-
-For more help, join the Discord: https://discord.gg/nTaknDvdUA
+<p align="center">
+  <strong>🎬 Happy Streaming! 📺</strong>
+</p>

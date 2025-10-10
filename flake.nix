@@ -1,103 +1,96 @@
-# WehttamSnaps NixOS Flake Configuration
-# Main entry point for the NixOS system
-
 {
-  description = "WehttamSnaps NixOS Configuration - Gaming, Streaming & Photography Workstation";
+  description = "WehttamSnaps NixOS Gaming & Workstation Configuration";
 
   inputs = {
-    # NixOS Unstable - Better for gaming and latest packages
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     
-    # Home Manager - User environment management
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    # Chaotic-Nyx - CachyOS kernel and bleeding edge packages
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     
-    # Niri compositor
+    nix-colors.url = "github:misterio77/nix-colors";
+    
     niri = {
-      url = "github:sodiboo/niri-flake";
+      url = "github:YaLTeR/niri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    # Stylix - System-wide theming
-    stylix = {
-      url = "github:danth/stylix";
+    noctalia-shell = {
+      url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, home-manager, chaotic, niri, stylix, ... }@inputs: {
-    
-    nixosConfigurations = {
-      # Main PC Configuration
-      snaps-pc = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        
-        specialArgs = { 
-          inherit inputs; 
-          username = "wehttamsnaps";
-          hostname = "snaps-pc";
-        };
+  outputs = { self, nixpkgs, unstable, home-manager, chaotic, nix-colors, niri, noctalia-shell, flake-utils }:
+    let
+      system = "x86_64-linux";
+      
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [
+          chaotic.overlays.default
+          nix-colors.overlays.default
+          niri.overlays.default
+        ];
+      };
+      
+      lib = nixpkgs.lib;
+      
+      username = "wehttamsnaps";
+      hostname = "snaps-pc";
+      
+    in {
+      nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit username hostname; };
         
         modules = [
-          # Core system configuration
-          ./hosts/snaps-pc/configuration.nix
-          ./hosts/snaps-pc/hardware-configuration.nix
+          ./hosts/${hostname}/configuration.nix
+          ./hosts/${hostname}/hardware-configuration.nix
           
-          # Chaotic-Nyx for CachyOS kernel and optimizations
-          chaotic.nixosModules.default
-          
-          # Niri compositor
-          niri.nixosModules.niri
-          
-          # Stylix for theming
-          stylix.nixosModules.stylix
-          
-          # Home Manager integration
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              
-              extraSpecialArgs = { 
-                inherit inputs; 
-                username = "wehttamsnaps";
-              };
-              
-              users.wehttamsnaps = import ./hosts/snaps-pc/home.nix;
-              
-              # Optionally, use home-manager.extraSpecialArgs to pass
-              # arguments to home.nix
-            };
-          }
-          
-          # Custom modules
+          ./modules/system
           ./modules/gaming
           ./modules/audio
-          ./modules/desktop
-          ./modules/streaming
-          ./modules/work
+          ./modules/graphics
+          
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.${username} = import ./home-manager/home.nix;
+            home-manager.extraSpecialArgs = { inherit username hostname; };
+          }
+        ];
+      };
+      
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = { inherit username hostname; };
+        modules = [
+          ./home-manager/home.nix
+        ];
+      };
+      
+      packages.${system} = {
+        default = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
+      };
+      
+      devShells.${system}.default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          git
+          nixpkgs-fmt
+          home-manager
         ];
       };
     };
-    
-    # Development shell for working on the configuration
-    devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
-      buildInputs = with nixpkgs.legacyPackages.x86_64-linux; [
-        git
-        nixpkgs-fmt
-        nil # Nix LSP
-      ];
-      
-      shellHook = ''
-        echo "WehttamSnaps NixOS Development Environment"
-        echo "Run 'sudo nixos-rebuild switch --flake .#snaps-pc' to apply changes"
-      '';
-    };
-  };
 }

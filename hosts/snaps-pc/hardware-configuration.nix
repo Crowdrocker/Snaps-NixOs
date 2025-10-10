@@ -1,106 +1,86 @@
-# Hardware Configuration for WehttamSnaps PC
-# Intel i5-4430 + AMD RX 580 + 16GB DDR3 RAM
-# Generated hardware configuration - customize as needed
-
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, pkgs, modulesPath, username, hostname, ... }:
 
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  # ============================================================================
-  # BOOT CONFIGURATION
-  # ============================================================================
-  
-  boot.initrd.availableKernelModules = [ 
-    "xhci_pci"      # USB 3.0
-    "ehci_pci"      # USB 2.0
-    "ahci"          # SATA
-    "usb_storage"   # USB storage
-    "sd_mod"        # SD card
-    "sr_mod"        # CD/DVD
-  ];
-  
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-
-  # ============================================================================
-  # FILESYSTEMS
-  # ============================================================================
-  
-  # Root filesystem (120GB SSD for Linux)
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos"; # Adjust this to your actual device
-    fsType = "ext4";
-    options = [ "noatime" "nodiratime" ]; # Performance optimization
+  boot = {
+    initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+    kernelModules = [ "kvm-intel" ];
+    extraModulePackages = [ ];
+    
+    # Use GRUB instead of systemd-boot
+    loader = {
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        useOSProber = true;
+        configurationLimit = 10;
+        
+        # Custom GRUB theme with J.A.R.V.I.S. branding
+        theme = pkgs.fetchFromGitHub {
+          owner = "vinceliuice";
+          repo = "grub2-themes";
+          rev = "2024-01-07";
+          sha256 = "sha256-1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+        };
+      };
+      timeout = 3;
+    };
   };
 
-  # Boot partition (EFI)
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/PUT_YOUR_ROOT_UUID_HERE";
+    fsType = "btrfs";
+    options = [ "compress=zstd" "noatime" "ssd" ];
+  };
+
   fileSystems."/boot" = {
-    device = "/dev/disk/by-label/boot"; # Adjust this to your actual device
+    device = "/dev/disk/by-uuid/PUT_YOUR_BOOT_UUID_HERE";
     fsType = "vfat";
   };
 
-  # Gaming/Files drive (1TB SSD)
-  fileSystems."/run/media/wehttamsnaps/LINUXDRIVE-1" = {
-    device = "/dev/disk/by-label/LINUXDRIVE-1"; # Adjust this to your actual device
-    fsType = "ext4";
-    options = [ "noatime" "nodiratime" "user" "exec" ];
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/PUT_YOUR_HOME_UUID_HERE";
+    fsType = "btrfs";
+    options = [ "compress=zstd" "noatime" "ssd" ];
   };
 
-  # ============================================================================
-  # SWAP CONFIGURATION
-  # ============================================================================
-  
-  # Swap file (recommended for 16GB RAM)
+  fileSystems."/run/media/wehttamsnaps/LINUXDRIVE-1" = {
+    device = "/dev/disk/by-uuid/PUT_YOUR_GAMES_UUID_HERE";
+    fsType = "btrfs";
+    options = [ "compress=zstd" "noatime" "ssd" ];
+  };
+
+  # Enable swap
   swapDevices = [{
-    device = "/swapfile";
-    size = 8192; # 8GB swap
+    device = "/dev/disk/by-uuid/PUT_YOUR_SWAP_UUID_HERE";
   }];
 
-  # ZRAM for better memory compression
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50; # Use 50% of RAM for ZRAM
+  # AMD GPU configuration
+  hardware = {
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+    
+    amdgpu = {
+      enableGcn = true;
+      enableDc = true;
+    };
   };
 
-  # ============================================================================
-  # CPU CONFIGURATION
-  # ============================================================================
-  
-  # Intel i5-4430 (Haswell, 4 cores, 4 threads)
+  # Enable CPU microcode updates
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  
-  # CPU frequency scaling
-  powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
 
-  # ============================================================================
-  # GPU CONFIGURATION
-  # ============================================================================
-  
-  # AMD RX 580 configuration
-  services.xserver.videoDrivers = [ "amdgpu" ];
-  
-  # AMD GPU power management
-  boot.kernelParams = [
-    "amdgpu.ppfeaturemask=0xffffffff"
-    "amdgpu.gpu_recovery=1"
-  ];
+  # Power management
+  powerManagement = {
+    cpuFreqGovernor = lib.mkDefault "performance";
+    enable = true;
+  };
 
-  # ============================================================================
-  # NETWORKING
-  # ============================================================================
-  
-  # Ethernet interface (adjust to your actual interface name)
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp0s25.useDHCP = lib.mkDefault true;
-
-  # ============================================================================
-  # SYSTEM ARCHITECTURE
-  # ============================================================================
-  
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  networking.hostName = hostname;
 }

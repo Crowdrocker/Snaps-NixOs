@@ -1,529 +1,395 @@
-# WehttamSnaps Gaming Guide
+# Gaming Guide - WehttamSnaps NixOS Setup
 
-Complete guide to gaming on your NixOS setup with AMD RX 580.
+Comprehensive gaming setup guide for AMD RX 580 with NixOS.
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Steam Setup](#steam-setup)
-3. [Game Launch Options](#game-launch-options)
-4. [Performance Optimization](#performance-optimization)
-5. [Game Modding](#game-modding)
-6. [Troubleshooting](#troubleshooting)
+## 🎮 Overview
 
----
+This setup provides optimal gaming performance for AMD RX 580 with:
+- **AMD GPU optimizations** (CoreCtrl, LACT)
+- **Gaming mode** with automatic performance tuning
+- **Steam integration** with custom launch options
+- **Multiple game launchers** (Steam, Lutris, Heroic)
+- **Controller support** for all major gamepads
 
-## Overview
+## 🔧 Hardware Setup
 
-### Your Gaming Hardware
+### GPU Information
+- **Model**: AMD RX 580 (4GB/8GB)
+- **Driver**: AMDGPU (open-source)
+- **Vulkan**: RADV (AMD's Vulkan driver)
+- **OpenGL**: Mesa 23.x+
 
-- **CPU**: Intel i5-4430 (4 cores, 4 threads @ 3.0-3.2 GHz)
-- **GPU**: AMD RX 580 (8GB VRAM)
-- **RAM**: 16GB DDR3
-- **Storage**: 1TB SSD for games
+### Performance Baseline
+| Game | Resolution | Settings | Expected FPS |
+|------|------------|----------|--------------|
+| Cyberpunk 2077 | 1080p | Medium | 45-60 |
+| The Division 2 | 1080p | High | 60-75 |
+| Fallout 4 | 1080p | High | 60-80 |
+| Warframe | 1080p | Ultra | 100+ |
 
-### Expected Performance
+## 🚀 Quick Setup
 
-At 1080p resolution:
-- **AAA Games**: 60+ FPS on High settings
-- **Esports Titles**: 144+ FPS
-- **Older Games**: Maxed out settings
-
-### Gaming Optimizations Enabled
-
-✅ CachyOS kernel for low latency
-✅ GameMode for automatic optimizations
-✅ AMD GPU fully optimized (RADV driver)
-✅ Mesa-git for latest improvements
-✅ DXVK async for shader compilation
-✅ ZRAM for better memory management
-✅ CPU governor set to performance
-
----
-
-## Steam Setup
-
-### Initial Configuration
-
-1. **Launch Steam**
-   ```bash
-   steam
-   ```
-   Or press: `Mod+G` → Select Steam
-
-2. **Login to your account**
-
-3. **Enable Proton for all games**
-   - Settings → Compatibility
-   - ✅ Enable Steam Play for all other titles
-   - Select: **Proton Experimental**
-
-4. **Add game library**
-   - Settings → Storage
-   - Add library folder: `/run/media/wehttamsnaps/LINUXDRIVE-1/SteamLibrary`
-
-### Install Proton-GE
-
-Proton-GE provides better compatibility and performance:
-
+### 1. Enable Gaming Mode
 ```bash
-# Launch ProtonUp-Qt
-protonup-qt
+# Activate gaming mode
+jarvis gaming
+
+# Or manually
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 ```
 
-1. Click "Add version"
-2. Select "Proton-GE"
-3. Install latest version
-4. Restart Steam
-
-### Enable MangoHud
-
-MangoHud shows FPS and performance metrics:
-
-1. Right-click game → Properties
-2. Launch Options: Add `mangohud` before other options
-3. Example: `mangohud gamemoderun %command%`
-
----
-
-## Game Launch Options
-
-### Base Launch Options (AMD RX 580)
-
-For most games, use:
-```
-RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
-**What this does:**
-- `RADV_PERFTEST=gpl,nggc` - Enables AMD optimizations
-- `DXVK_ASYNC=1` - Reduces shader compilation stuttering
-- `gamemoderun` - Activates GameMode optimizations
-- `%command%` - Steam placeholder for game executable
-
-### Game-Specific Launch Options
-
-#### Cyberpunk 2077
-```
-RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-**Notes**: Use Proton-GE for best performance
-
-#### The Division 1 & 2
-```
-PROTON_ENABLE_NVAPI=1 DXVK_ASYNC=1 gamemoderun %command%
-```
-**Notes**: NVAPI needed for proper rendering
-
-#### Fallout 4
-```
-PROTON_USE_WINED3D=0 DXVK_ASYNC=1 gamemoderun %command%
-```
-**Notes**: For modding, use steamtinkerlaunch (see modding section)
-
-#### Watch Dogs Series
-```
-RADV_PERFTEST=gpl DXVK_ASYNC=1 gamemoderun %command%
-```
-
-#### The First Descendant
-```
-PROTON_ENABLE_NVAPI=1 DXVK_ASYNC=1 gamemoderun %command%
-```
-**Notes**: May require Proton-GE
-
-#### Warframe
-```
-RADV_PERFTEST=gpl DXVK_ASYNC=1 gamemoderun %command%
-```
-
-#### Call of Duty HQ
-```
-PROTON_ENABLE_NVAPI=1 DXVK_ASYNC=1 gamemoderun %command%
-```
-
-### Advanced Launch Options
-
-#### With MangoHud (Performance Overlay)
-```
-mangohud RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
-#### With Gamescope (Gaming Compositor)
-```
-gamescope -w 1920 -h 1080 -f -- RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
-#### Force Specific Proton Version
-```
-PROTON_VERSION=GE-Proton8-25 RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
----
-
-## Performance Optimization
-
-### Activate Gaming Mode
-
-Press `Mod+Shift+G` to activate gaming mode:
-- Plays J.A.R.V.I.S. sound
-- Sets CPU governor to performance
-- Activates GameMode optimizations
-- Sends notification
-
-### Monitor Performance
-
-#### In-Game Overlay (MangoHud)
+### 2. Check GPU Status
 ```bash
-# Add to launch options
-mangohud %command%
+# GPU information
+radeontop
+lact gui
 ```
 
-Press `Shift+F12` to toggle overlay
-
-#### System Monitor
+### 3. Test Vulkan
 ```bash
-# Press Mod+Escape for btop
-# Or
-btop
+# Vulkan info
+vulkaninfo | grep "GPU id"
+vkcube
 ```
 
-#### GPU Monitor
+## 🎯 Game Launchers
+
+### Steam
+**Installation**: Pre-installed via NixOS configuration
+**Location**: Applications → Games → Steam
+
+#### Steam Launch Options
 ```bash
-# Press Mod+Shift+Escape for nvtop
-# Or
+# Global Steam options
+STEAM_FORCE_DESKTOPUI_SCALING=1 %command%
+
+# Per-game options (examples)
+# Cyberpunk 2077:
+gamemoderun %command% --launcher-skip -skipStartScreen
+
+# Fallout 4:
+gamemoderun %command% -windowed -noborder
+
+# The Division:
+gamemoderun %command% -windowed
+```
+
+### Lutris
+**Installation**: Pre-installed
+**Usage**: Applications → Games → Lutris
+
+### Heroic Games Launcher
+**Installation**: Pre-installed
+**Usage**: Applications → Games → Heroic
+
+### Bottles
+**Installation**: Pre-installed
+**Usage**: Applications → Games → Bottles
+
+## 🎮 Game-Specific Configurations
+
+### Cyberpunk 2077
+**Settings File**: `~/.local/share/Steam/steamapps/compatdata/1091500/pfx/drive_c/users/steamuser/My Documents/CD Projekt Red/Cyberpunk 2077/UserSettings.json`
+
+**Recommended Settings**:
+```json
+{
+  "streaming": {
+    "enabled": false,
+    "max_memory_usage": 2048
+  },
+  "graphics": {
+    "preset": "Medium",
+    "vsync": false,
+    "fps_limit": 60
+  }
+}
+```
+
+### Fallout 4
+**Settings File**: `~/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/My Documents/My Games/Fallout4/Fallout4Prefs.ini`
+
+**Recommended Settings**:
+```ini
+[Display]
+iSize W=1920
+iSize H=1080
+bFull Screen=0
+bBorderless=1
+iPresentInterval=0
+```
+
+### The Division 2
+**Settings File**: `~/.local/share/Steam/steamapps/compatdata/365590/pfx/drive_c/users/steamuser/My Documents/My Games/Tom Clancy's The Division 2/Settings.xml`
+
+## 🕹️ Controller Support
+
+### Xbox Controllers
+```bash
+# Xbox 360/One controllers
+lsusb | grep -i xbox
+```
+
+### PlayStation Controllers
+```bash
+# PS4/PS5 controllers
+lsusb | grep -i sony
+```
+
+### Steam Controller
+```bash
+# Check Steam controller
+lsusb | grep -i steam
+```
+
+### Custom Controller Mapping
+**Location**: `~/.config/steam-ctlr/`
+
+## 🔧 GPU Optimization
+
+### CoreCtrl
+**Launch**: Applications → System → CoreCtrl
+
+#### Recommended Settings
+- **Performance Mode**: Gaming
+- **Fan Curve**: Aggressive (30°C=25%, 60°C=50%, 80°C=100%)
+- **Power Limit**: +50% (if supported)
+
+### LACT
+**Launch**: Terminal → `lact gui`
+
+#### Key Settings
+```bash
+# Check current settings
+lact show
+
+# Set performance mode
+lact set performance_level auto
+lact set power_cap 130
+```
+
+### AMD GPU Tuning
+```bash
+# Enable performance mode
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+# GPU performance
+echo high | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
+```
+
+## 🎮 Gaming Shortcuts
+
+### Keyboard Shortcuts
+- **Gaming Mode**: `Mod+Shift+G`
+- **Steam**: `Mod+G`
+- **Lutris**: `Mod+Shift+L`
+- **Controller Settings**: `Mod+Shift+C`
+
+### J.A.R.V.I.S. Commands
+```bash
+# Launch games
+jarvis launch steam
+jarvis launch lutris
+jarvis launch cyberpunk
+jarvis launch fallout4
+
+# Gaming mode
+jarvis gaming
+```
+
+## 🎯 Performance Monitoring
+
+### Real-time Monitoring
+```bash
+# GPU monitoring
+radeontop
+watch -n 1 cat /sys/class/drm/card0/device/gpu_busy_percent
+
+# System monitoring
+htop
 nvtop
 ```
 
-### Optimize Game Settings
+### Performance Tools
+- **MangoHUD**: In-game overlay
+- **GOverlay**: MangoHUD configuration GUI
+- **CoreCtrl**: AMD GPU control
+- **LACT**: AMD GPU tuning
 
-For best performance on RX 580:
-
-**Graphics Settings:**
-- Resolution: 1920x1080
-- Texture Quality: High
-- Shadow Quality: Medium
-- Anti-Aliasing: FXAA or TAA
-- V-Sync: Off (use FreeSync if available)
-
-**AMD-Specific:**
-- Enable FreeSync in monitor settings
-- Use Radeon Anti-Lag (enabled by default)
-
-### GPU Control
-
-#### Using CoreCtrl
-
+### Benchmarking
 ```bash
-corectrl
+# Install benchmarks
+nix-env -iA nixos.glmark2
+nix-env -iA nixos.unigine-valley
+
+# Run benchmarks
+glmark2
 ```
 
-1. Enable performance mode
-2. Adjust fan curve
-3. Monitor temperatures
+## 🎮 Game Library
 
-#### Using LACT
+### Installed Games
+| Game | Platform | Status | Notes |
+|------|----------|--------|-------|
+| **Call of Duty HQ** | Steam | ✅ Working | DX11 mode |
+| **Cyberpunk 2077** | Steam | ✅ Working | Medium settings |
+| **Fallout 4** | Steam | ✅ Working | Proton GE |
+| **FarCry 5** | Steam | ✅ Working | Vulkan |
+| **Ghost Recon Breakpoint** | Steam | ✅ Working | DXVK |
+| **Marvel's Avengers** | Steam | ✅ Working | Proton |
+| **Need for Speed Payback** | Steam | ✅ Working | Proton |
+| **Rise of the Tomb Raider** | Steam | ✅ Working | DXVK |
+| **Shadow of the Tomb Raider** | Steam | ✅ Working | DXVK |
+| **The First Descendant** | Steam | ✅ Working | Proton |
+| **Tom Clancy's The Division** | Steam | ✅ Working | DXVK |
+| **Tom Clancy's The Division 2** | Steam | ✅ Working | Vulkan |
+| **Warframe** | Steam | ✅ Working | Native |
+| **Watch_Dogs** | Steam | ✅ Working | DXVK |
+| **Watch_Dogs 2** | Steam | ✅ Working | DXVK |
+| **WatchDogs_Legion** | Steam | ✅ Working | DXVK |
 
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+#### Game Won't Launch
 ```bash
-sudo systemctl start lactd
-lact
-```
-
-More detailed GPU control interface
-
----
-
-## Game Modding
-
-### Nexus Mods App (Recommended)
-
-The official Nexus Mods app now supports Linux:
-
-```bash
-# Download from https://www.nexusmods.com/app
-# Currently supports Cyberpunk 2077
-```
-
-### SteamTinkerLaunch (For Vortex/MO2)
-
-#### Install SteamTinkerLaunch
-
-Already installed in your system!
-
-#### Configure for Fallout 4
-
-1. Right-click Fallout 4 → Properties
-2. Launch Options:
-   ```
-   steamtinkerlaunch %command%
-   ```
-
-3. Launch game once to create prefix
-
-4. SteamTinkerLaunch menu will appear:
-   - Select "Vortex" or "Mod Organizer 2"
-   - Install mod manager
-   - Configure mods
-
-#### Supported Games
-
-- Fallout 3, NV, 4
-- Skyrim, Skyrim SE
-- Oblivion
-- Cyberpunk 2077
-- The Witcher 3
-- And many more...
-
-### Manual Modding
-
-For games without mod manager support:
-
-1. Locate game directory:
-   ```bash
-   cd ~/.steam/steam/steamapps/common/[GAME_NAME]
-   ```
-
-2. Install mods manually to game directory
-
-3. Use Proton prefix for Windows-specific mods:
-   ```bash
-   cd ~/.steam/steam/steamapps/compatdata/[GAME_ID]/pfx
-   ```
-
----
-
-## Troubleshooting
-
-### Game Won't Launch
-
-**Check Proton logs:**
-```bash
-# Enable logging
-PROTON_LOG=1 steam
-
-# Logs saved to: ~/steam-[APPID].log
-```
-
-**Try different Proton version:**
-1. Right-click game → Properties → Compatibility
-2. Force specific Proton version
-3. Try Proton-GE
-
-### Poor Performance
-
-**Check if GameMode is active:**
-```bash
-gamemoded -s
-```
-
-**Verify GPU is being used:**
-```bash
-glxinfo | grep "OpenGL renderer"
-# Should show: AMD Radeon RX 580
-```
-
-**Check CPU governor:**
-```bash
-cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-# Should show: performance
-```
-
-### Shader Compilation Stuttering
-
-**Solution**: Use DXVK async
-```
-DXVK_ASYNC=1 %command%
-```
-
-**Or**: Let shaders compile first
-- Play game for 10-15 minutes
-- Stuttering will decrease as shaders compile
-
-### Game Crashes
-
-**Check system logs:**
-```bash
-journalctl -xe | grep steam
-```
-
-**Verify game files:**
-1. Right-click game → Properties
-2. Local Files → Verify integrity of game files
-
-**Try different Proton version:**
-- Some games work better with specific Proton versions
-- Check ProtonDB for recommendations
-
-### Audio Issues
-
-**Check PipeWire:**
-```bash
-systemctl --user status pipewire
-```
-
-**Restart audio:**
-```bash
-systemctl --user restart pipewire pipewire-pulse wireplumber
-```
-
-### Controller Not Working
-
-**Check if detected:**
-```bash
-ls /dev/input/js*
-```
-
-**Test controller:**
-```bash
-jstest /dev/input/js0
-```
-
-**Steam Input:**
-- Settings → Controller → General Controller Settings
-- Enable controller support
-
----
-
-## Performance Tips
-
-### 1. Close Background Applications
-
-Before gaming:
-```bash
-# Close unnecessary apps
-# Keep only essential services running
-```
-
-### 2. Use Dedicated Gaming Workspace
-
-Press `Mod+5` to switch to gaming workspace
-
-### 3. Disable Compositor (If Needed)
-
-For maximum performance:
-```bash
-# Niri is already optimized, but you can use gamescope
-gamescope -f -- %command%
-```
-
-### 4. Monitor Temperatures
-
-Keep an eye on temps:
-```bash
-watch -n 1 sensors
-```
-
-Ideal temps:
-- CPU: < 80°C
-- GPU: < 85°C
-
-### 5. Update Drivers Regularly
-
-```bash
-cd ~/nixos-config
-nix flake update
-sudo nixos-rebuild switch --flake .#snaps-pc
-```
-
----
-
-## Game-Specific Guides
-
-### Cyberpunk 2077
-
-**Optimal Settings:**
-- Texture Quality: High
-- Ray Tracing: Off (RX 580 doesn't support RT)
-- FSR: Quality mode
-- DLSS: Not available (NVIDIA only)
-
-**Mods:**
-- Use Nexus Mods App
-- Recommended: Cyber Engine Tweaks
-
-### The Division 2
-
-**Optimal Settings:**
-- Resolution: 1920x1080
-- Graphics: High
-- V-Sync: Off
-- Frame Rate Limit: Unlimited
-
-**Tips:**
-- Disable DX12 if crashes occur
-- Use Proton-GE
-
-### Fallout 4
-
-**Modding:**
-- Use SteamTinkerLaunch + Vortex
-- Install F4SE through Vortex
-- Use Mod Organizer 2 for advanced modding
-
-**Performance:**
-- Cap FPS to 60 (physics tied to framerate)
-- Use texture optimization mods
-
----
-
-## Useful Commands
-
-```bash
-# List installed games
-steam -list
-
-# Launch game directly
-steam steam://rungameid/[APPID]
-
 # Check Proton version
-steam -version
-
-# Clear shader cache
-rm -rf ~/.steam/steam/steamapps/shadercache
-
-# Clear download cache
-steam -clearcache
-
+# Try Proton GE
 # Verify game files
-steam -validate [APPID]
+```
+
+#### Low FPS
+```bash
+# Check GPU usage
+radeontop
+
+# Check CPU governor
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+# Check VRAM usage
+nvtop
+```
+
+#### Controller Not Working
+```bash
+# Check device
+lsusb | grep -i controller
+
+# Test input
+evtest
+```
+
+#### Audio Issues
+```bash
+# Check audio devices
+pactl list short sinks
+pactl list short sources
+```
+
+### Proton Versions
+- **Proton Experimental**: Latest features
+- **Proton GE**: Custom build with patches
+- **Proton 8.0**: Stable version
+
+## 🔄 Updates & Maintenance
+
+### Game Updates
+```bash
+# Update Steam
+steam --reset
+
+# Update Proton
+# Via Steam settings → Steam Play → Proton version
+```
+
+### System Updates
+```bash
+# Update system
+./install.sh --update
+
+# Update GPU drivers
+nixos-rebuild switch --upgrade
+```
+
+## 🎮 Game Modding
+
+### Nexus Mods
+**Installation**: Pre-installed via Flatpak
+**Location**: Applications → Games → Nexus Mods
+
+### SteamTinkerLaunch
+```bash
+# Install SteamTinkerLaunch
+nix-env -iA nixos.steamtinkerlaunch
+
+# Enable for specific games
+# Right-click game → Properties → Compatibility → SteamTinkerLaunch
+```
+
+### Mod Organizer 2
+```bash
+# Install via Lutris
+# Add MO2 installer from Lutris
+```
+
+## 📊 Performance Tips
+
+### CPU Optimization
+```bash
+# CPU governor
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+# CPU affinity
+taskset -c 0-3 game_command
+```
+
+### Memory Optimization
+```bash
+# Check memory
+free -h
+
+# Clear cache
+sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
+```
+
+### GPU Optimization
+```bash
+# VRAM check
+radeontop
+
+# GPU clock
+lact set core_clock 1400
+lact set memory_clock 2000
+```
+
+## 🎯 Quick Commands
+
+### Gaming Mode
+```bash
+# Activate gaming mode
+jarvis gaming
+
+# Check system status
+jarvis monitor
+
+# Launch games
+jarvis launch steam
+```
+
+### Performance Check
+```bash
+# System info
+neofetch
+radeontop
+htop
+
+# Temperature check
+sensors
 ```
 
 ---
 
-## Resources
-
-- **ProtonDB**: https://www.protondb.com/ - Game compatibility database
-- **Steam Deck Verified**: Games verified for Linux
-- **Nexus Mods**: https://www.nexusmods.com/ - Mod repository
-- **PCGamingWiki**: https://www.pcgamingwiki.com/ - Game fixes and tweaks
-
----
-
-## Quick Reference
-
-### Launch Option Templates
-
-**Basic:**
-```
-RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
-**With MangoHud:**
-```
-mangohud RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
-**With Gamescope:**
-```
-gamescope -w 1920 -h 1080 -f -- RADV_PERFTEST=gpl,nggc DXVK_ASYNC=1 gamemoderun %command%
-```
-
-**For Modding:**
-```
-steamtinkerlaunch %command%
-```
-
----
-
-**Happy Gaming! 🎮**
-
-For more help, join the WehttamSnaps Discord: https://discord.gg/nTaknDvdUA
+<p align="center">
+  <strong>🎮 Happy Gaming! 🕹️</strong>
+</p>

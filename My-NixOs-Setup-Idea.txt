@@ -1,0 +1,315 @@
+fMy Name is Matthew and my github is Crowdrocker WehttamSnaps on Twitch, and WehttamSnaps on youtube. I'm a full time wedding and photobooth photographer but I love gaming as well. I'd like to create a complete NixOS setup for streaming and work for WehttamSnaps. Coming from windows 11 BTW, also WehttamSnaps is my name spelled backwords. The Reason for NixOS is because the workflow is amazingly good. I started with Arch hyprland and then was introduced to Niri. My question is how do i convert over to niri from hyprland using NixOS? I know that Niri doesn't have much documentation and its gonna be a bit of a learning curve for me. but i like to explore and learn new things. Now that NixOS come with a Calamares installer its easier to install. I really like JaKooLit or Shell Ninja which is inspired by JaKooLit.  If i could some how convert those over to niri that'd be awesome. I know the JaKooLit has NixOS dotfiles installer for hyprland but not niri.  I was reading the NixOS wiki that the Unstable version is better for gaming and such
+
+* Shell i found that i really like are: 
+- noctalia-shell https://github.com/noctalia-dev/noctalia-shell.git A beautiful, minimal desktop shell for Wayland that actually gets out of your way. Built on Quickshell with a warm lavender aesthetic that you can easily customize to match your vibe. noctalia comes with just a shell itself or you can also combine it with the dotfiles with just a basic niri config.kdl and a kitty config. It's compatable with Niri and Hyprland
+
+One thing that stud out to me about noctalia is that you can easily add more widgets following his wiki as well as Create my own Matugen template, which i'd like help with.
+
+I used to have a dell studio xps 9100, which worked amazingly. But just the other day I was doing some work. and suddenly kept randomly turning off. After it did it about 3 times, it did come back on with a solid amber light. So I looked up the manual and it said it's usually the power suply or cmos battery. I changed the battery and new power supply. I powered up but now Post and the fans just kept spinning, I did more searching and some people with the same problem said to change the ram. That also didnt work. I decided to give up on it because i'm on a budget and money was running low and getting new parts. But as i figured that I most likely needed a new motherboard.  I just built a budget pc from an old pc I bought from facebook marketplace. I used the parts that I had already had from my Dell. It Has an i5-4430, replaced gpu with RX580, has 16GB ram, replaced hdd hard drives with ssd. 1TB ssd for games and files, 120GB for Linux and another 120GB for windows. Also replaced the fans and applied new thermal paste as well as a new power supply 750w with a single monitor. The CPU was running hot before the new thermal paste and CPU temps dropped 15-25°C under load.but not sure how to control the fans. It only had the cpu fan and I added one more. It's a small case so it can't fit too much in it. I have another gpu as well that I have from my dell xps 9100 which is a GTX 1650. I know its not much of a pc but it works for me for the time being unitil I can get a better one. 
+
+
+ 
+My question:
+1) Which one would benefit me most: the gtx 1650 or rx 580?
+2) Should i fork a preconfig and tweak from there or start from scratch? 
+3) I tested them and listed things I liked about them, Not sure how to kinda mix and match. If that's even possible without breaking something.
+
+* First option which was suggested to me on reddit is install Niri dotfiles from https://github.com/Ly-sec/dotfiles.git with Noctalia-https://github.com/noctalia-dev/noctalia-shell
+Things Liked: I like the overall feel of it and workflow.
+
+* Second option is Hyprland using a recommended config from NixOs, Misterio77's config https://github.com/Misterio77/nix-config.git. He uses waybar but i would replace it with noctalia-shell
+Highlights:
+It's his NixOS/home-manager config files. Requires Nix flakes.
+Multiple NixOS configurations, including desktop, laptop, server
+Opt-in persistence through impermanence + blank snapshotting
+Encrypted single BTRFS partition
+Fully declarative self-hosted stuff
+Deployment secrets using sops-nix
+Mesh networked hosts with tailscale and headscale
+Flexible Home Manager Configs through feature flags
+Extensively configured wayland environments (sway and hyprland)
+Declarative themes and wallpapers with nix-colors
+Hydra CI/CD server and binary cache that uses the desktops as remote builders
+
+Tooling and applications he use
+Most relevant user apps daily drivers:
+
+hyprland + swayidle + swaylock
+waybar
+helix
+fish
+alacritty
+qutebrowser
+neomutt + mbsync
+khal + khard + todoman + vdirsyncer
+gpg + pass
+tailscale
+podman
+zathura
+wofi
+bat + fd + rg
+kdeconnect
+sublime-music
+Some of the services I host:
+
+hydra
+navidrome
+deluge
+prometheus
+websites (such as https://m7.rs)
+minecraft
+headscale
+Nixy stuff:
+
+nix-colors
+sops-nix
+impermanence
+home-manager
+deploy-rs
+and NixOS and nix itself, of course :)
+---
+I would like to help with a Quickshell setup.  i'm  thinking of going with my second option. I'd like to may my own custom Quickshell bar if possible add some of my own widgets. something nice and clean also i'm not a fan the bar being to the left or right. but top or bottom is fine. I saw that Noctalia-https://github.com/noctalia-dev/noctalia-shell you can add your own widgets.
+---
+
+
+4) When all is done with everything, how do I go about saving my progress?
+5) why is NixOS better with package management?
+6) How can i include chaotic-cx/nyx and CachyOS kernal?
+6) Can i convert things from hyprland over to niri?
+7) Is it possible to separate niri config.kdl like hyprland so its not one long config
+8) How can i use GRUB instead of Systemd. also how to use a shorter passwork instead of the Required 6 characters
+
+I'd like if you can make a Component Integration Strategy, Component | Best Template | Modifications Needed. What to use as Base. Also how to incorporate work/gaming widgets in quickshell Noctalia and NixOs repo structure
+
+##################### Repos that created to get me started ########################
+7) I would like help to make separate different branches on one repo for different things like wallpapers, jarvis sounds, themes, etc.
+- i would like help setting it up with ReadMe.md, interaction install.sh, and making separate branches. 
+- Is it ok to use Github Desktop? I like to use it because its the easiest for me.
+- Main Repo---https://github.com/Crowdrocker/Hypr-Snaps.git - for hyprland
+I found this starter Git repository structure for hyprland
+Hyprland modular Git repository structure
+Split each category into its own file for better organization. 
+I would add a config folder for the .conf files remove waybar
+├── hyprland/
+│   ├── hyprland.conf           # Main config; sources all other files
+│   ├── animations.conf         # Animation settings
+│   ├── binds.conf              # Key and mouse bindings
+│   ├── environment.conf        # Environment variables
+│   ├── general.conf            # General settings
+│   ├── monitors.conf           # Monitor setup and configurations
+│   ├── scripts/                # Utility scripts (e.g., screenshots, wallpaper)
+│   ├── window_rules.conf       # Rules for specific application windows
+│   └── appearance/
+│       ├── decorations.conf    # Window decorations (borders, shadows)
+│       └── themes/
+│           ├── light_theme.conf
+│           └── dark_theme.conf
+├── waybar/
+│   ├── config.jsonc
+│   └── style.css
+├── rofi/
+│   ├── config.rasi
+│   └── themes/
+│       └── my_theme.rasi
+└── ... (other app configs like alacritty, kitty, etc.)
+
+
+
+- Main Repo---https://github.com/Crowdrocker/Snaps-NixOs.git - for NixOs
+
+NixosRepo Structure
+Split each category into its own file for better organization. 
+I found this on NixOs manual used by Misterio77’s https://github.com/Misterio77/nix-config.git main repo for inspiration.
+
+Where his repo looks something like this (simplified):
+
+.
+├── flake.lock
+├── flake.nix
+├── home-manager
+├── hosts
+│   ├── curve
+│   │   └── home.nix
+│   ├── framework
+│   │   ├── configuration.nix
+│   │   ├── hardware-configuration.nix
+│   │   ├── home.nix
+│   │   ├── secrets.yaml
+│   │   └── users
+│   └── mesmer
+│       ├── configuration.nix
+│       ├── hardware-configuration.nix
+│       ├── home.nix
+│       ├── secrets.yaml
+│       └── users
+├── LICENSE.md
+├── modules
+├── nixos
+├── overlays
+├── pkgs
+├── README.md
+└── shell.nix
+
+
+
+
+##################### Discord that created to get me started ########################
+- I made a discord for my Repos but i need help setting it up - https://discord.gg/nTaknDvdUA
+- It's mainly for help on my repos, steaming, gaming and community gathering
+- It'd be nice to have a place for games like The Division and The First Descendant
+- Clan invites, share photos, share info, share memes, share builds, LFG for each game, share linux setups tips and tricks, etc.
+- Structure and examples for welcome, rules, etc.
+
+
+#########  create the detailed install script including config files and modular setup. #########
+-----can help me with the qpwgraph audio routing setup.
+-----Help with creating my README.md and detailed documentation.
+-----Assist with making my workspace and gaming config modular and maintainable.
+-----Modular Config Repo Structure
+-----I really would like an QUICKSHELL widgets for work and gaming and Quickshell Bar because its seems a bit smoother
+----- make its newbie friendly to switch and add widgets to Quickshell
+
+
+My goal is to make setup on NixOS Linux like my own workstation for my brand WehttamSnaps, work and gaming
+Core Goals
+- Create a personalized workstation for WehttamSnaps.
+- Achieve enhanced productivity and faster responsiveness.
+- Implement smooth animations and vibrant color schemes.
+- Build a system that 'just works' for both work and gaming.
+- Fully integrate a J.A.R.V.I.S. theme with custom sounds.
+It just works!
+
+Essential Extras
+- Adding New Widgets: how to create and use the widget manager script to create new widgets from templates
+- Quickshell widgets for work and gaming launchers.
+- Custom Welcome and Settings apps.
+- Branded Power Menu.
+- PipeWire audio setup for advanced routing.
+- J.A.R.V.I.S. sound pack for system events.
+- **Zsh, Bash, Fastfetch**
+- useful aliases (zshrc, bashrc scripts) for quick clean, etc. and also add my own logo to fastfetch
+- Auto dectect when new keybinds are added and add them to keybinds Cheat sheet 
+
+
+##################### Brand Identity ########################
+**Name:** WehttamSnaps
+**Real Name:** Matt
+**Primary Color Palette:** Violet-to-cyan gradient (#8A2BE2 to #00FFFF)
+**Secondary Colors:** Deep blue (#0066CC), Hot pink (#FF69B4)
+**Themes I Like:** Flat-Remix-GTK-Blue-Dark-Solid Sweet-Ambar-Blue-Dark-v40 Tokyonight-Dark
+**Style:** Modern, tech-focused, photographic elements
+* **GAMING HARD DRIVE**: My games, photos, and video are stored on my 1TB ssd /run/media/wehttamsnaps/LINUXDRIVE-1
+* **MY USERNAME AND SYSTEM NAME**: My Username: wehttamsnaps System: snaps-pc
+### **Hardware Context**
+* **CPU**: Intel i5-4430 (Haswell, 4 cores/4 threads, 3.0–3.2 GHz).
+* **GPU**: AMD RX 580 (4 GB or 8 GB VRAM?). A capable 1080p gaming GPU, well-supported by Linux’s open-source Mesa drivers (AMDGPU).
+* **RAM**: 16 GB DDR3 (likely 1600 MHz)
+* **Storage**: 1 TB SSD (games/files), 120 GB SSD (Linux), 120 GB SSD (Windows). The Linux SSD is small, so a minimal setup or efficient filesystem is ideal.
+* **PSU**: 750 W (overkill for this setup but ensures stability and future upgrades).
+* **Use Case**: Gaming and general use, with a dual-boot setup (Linux \+ Windows).
+
+##################### THINGS I'D LIKE TO ADD IF POSSIBLE ########################
+### Gaming Optimizations
+- AMD gaming optimizations (FSYNC, Vulkan)
+- Gamescope integration
+- Gamemode toggle for performance
+- ZRAM configuration
+- Custom keybindings for gaming-specific functions
+- Enhanced Cooling and GPU Control Setup for WehttamSnaps
+- Configure CoreCtrl for advanced control
+- LACT (Linux AMDGPU Controller) Setup
+- CoolerControl Configuration
+- configure fancontrol
+- configuration to include GPU monitoring and control
+- Create a service to manage fan speeds based on temperature
+- gamemode activated when game starts
+
+##################### Extras ########################
+- **Extras**:
+  - Neofetch, fastfetch, htop, zsh, btop, Autotiling, fuzzel, dunst, mako.
+  - Wallpaper management with hyprpaper, swww.
+  - nwg-drawer with NixOS or my own logo icon.
+
+- **Audio**: PipeWire with pavucontrol for control.
+- **Core Components**:
+  - XFCE Terminal with TokyoNight and Starship prompt.
+  - Thunar file manager, Rofi/Fuzzel launcher (TokyoNight-styled).
+  - SDDM SugarCandy with matching theme, GRUB styled similarly.
+- **Quickshell Custom Apps & Widgets**:
+  - **Welcome App**: Script for keybindings, settings access, and system updates.
+  - **Settings App**: GUI for Quickshell , Rofi, and configs.
+  - **Quickshell Game Launcher**: Buttons for Steam,Twitch, Lutris, Heroic, Spotify.
+  - **Quickshell Work Launcher**: Shortcuts for Inkscape, Discord, Krita, GIMP.
+  - **WebApps**: Integrated access to YouTube, Twitch, Instagram, AI chat. I'd like to learn how to make my own WebApps
+  - **Power Menu**: Branded reboot/logout/sleep/lock/shutdown options.
+  - **Quick Editor**: Edit config files, steamlauch options, etc.
+Additional window rules and workspaces to assign different programs
+I'd like the configs separated for easy management.
+
+
+######################## Gaming Modding ########################
+I found that Nexus.com has a new Official Nexus Mods App https://www.nexusmods.com/app for Windows & Linux. It's basically Vortex with out the use of steamtinkerlaunch. its onyly for Cyperpunk but they plan to add more games soon.
+How to setup steamtinkerlaunch for Vortex or MO2
+specific games Mainly Fallout games and Cyberpunk
+Setup gaming and workflow for single monitor setup
+
+######################## Gaming Streaming ########################
+Help with settup up audio routing with qpwgraph and pavucontrol
+Scenes
+keybindings
+Suggestions where to get free templates
+
+######################## Steam launch options for my steam library  ########################
+- Call of Duty HQ
+- Cyberpunk 2077
+- Fallout 4
+- FarCry5
+- Ghost Recon Breakpoint
+- Marvels Avengers
+- Need for Speed Payback
+- Rise of the Tomb Raider
+- Shadow of the Tomb Raider
+- The First Descendant
+- Tom Clancy's The Division
+- Tom Clancy's The Division 2
+- Warframe
+- Watch_Dogs
+- Watch_Dogs2
+- WatchDogs_Legion
+
+##################### AUDIO AND FUN STUFF ########################
+When I was on windows there was a program I used called voicemeter. I could separate audio such as game, browser, discord and spotify.  Is there something similar to that for Linux
+Could you make me a cheat sheet?  I could save it and follow along with it? As well as the easiest way for new users
+
+# fully integrate the J.A.R.V.I.S. theme throughout my setup!
+#### J.A.R.V.I.S. Theme Integration
+-J.A.R.V.I.S. Sound Pack Integration
+-Enhanced J.A.R.V.I.S. Sound Manager
+-J.A.R.V.I.S. Themed Niri or Hyprland Configuration
+-J.A.R.V.I.S. Enhanced Quickshell bar 
+-J.A.R.V.I.S. Boot Animation
+
+# J.A.R.V.I.S. Sound Pack Integration
+some iconic J.A.R.V.I.S. sounds
+All sounds i've made from https://www.101soundboards.com/ using 73296-jarvis-v1-paul-bettany-tts-computer-ai-voice and 1023595-idroid-tts-computer-ai-voice
+If you have any Suggestions for some other ones i can add let me know :)
+-jarvis-startup.mp3 - "Good morning, Matthew. All systems operational." -  `exec-once` section to play `jarvis-startup.mp3`. make it conditional (e.g., check `date +%H` for "Good morning/afternoon/evening, Matthew").
+-lets try this one-->jarvis-startup.mp3 - "Allow me to introduce myself, I am JARVIS, a virtual artificial intelligence. All systems are ready for gaming and work.
+-jarvis-shutdown.mp3 - "Shutting down. Have a good day, Matthew." - Create a script (`shutdown_jarvis.sh`) that plays `jarvis-shutdown.mp3` before initiating system shutdown, and bind it to a key combination or power menu entry.
+-jarvis-notification.mp3 - "Matthew, you have a notification." - Configure `dunst` to play `jarvis-notification.mp3` for incoming alerts.
+-jarvis-warning.mp3 - "Warning: System temperature critical." - Integrate `jarvis-warning.mp3` with system monitoring scripts (e.g., high CPU/GPU temp, low disk space).
+-jarvis-gaming.mp3 - "Gaming mode activated. Systems at maximum performance." - Create scripts that play `jarvis-gaming.mp3` and `jarvis-streaming.mp3` when these modes are activated (e.g., via Quickshell widgets).
+-jarvis-streaming.mp3 - "Streaming systems online. All feeds operational
+*   **J.A.R.V.I.S. Boot Animation:** Custom SDDM login screen with J.A.R.V.I.S. animations or a pre-login script that displays an ASCII art J.A.R.V.I.S. logo and plays a sound.
+
+
+###### Audio Routing like Voicemeter on Linux
+----Use PipeWire with qpwgraph for advanced audio routing.
+----Pavucontrol for simple volume management.
+----Create virtual sinks and routes using qpwgraph to separate audio streams (game, browser, discord, Spotify).
+----can provide a step-by-step guide for qpwgraph and pavucontrol setup.
+-----Write scripts for J.A.R.V.I.S. sound triggers integrated with Niri or Hyprland events.
+
+- Any help you can give me will be appreciated in helping  me and i'm up for any other ideas that i may have not mentioned. 
+- I'd love it if you could send a full install script and structure for easy uploading and or copy and paste codes
+- Niri config.kdl
