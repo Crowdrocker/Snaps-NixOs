@@ -26,6 +26,20 @@
 - **Storage**: 120GB Linux SSD, 1TB Games SSD
 - **OS**: NixOS (Unstable channel recommended)
 
+## 🌿 Branches
+
+This repo uses modular branches to keep things organized:
+
+- `main`: Core NixOS + Home Manager setup
+- `wallpapers`: Custom wallpapers for Matugen
+- `sounds`: J.A.R.V.I.S. sound pack
+- `themes`: Terminal and UI themes
+- `widgets`: Quickshell widgets
+- `scripts`: Utility scripts
+- `docs`: Guides and cheat sheets
+
+Use `install.sh` to pull and apply content from each branch.
+
 ### Installation
 
 #### 1. Fresh NixOS Install
